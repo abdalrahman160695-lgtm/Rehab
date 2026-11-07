@@ -1,0 +1,963 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0f766e">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<title>متتبع التأهيل والتمرين</title>
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icon.svg" type="image/svg+xml">
+<style>
+:root{
+  --bg:#f3f6f5;--card:#fff;--text:#14201f;--muted:#5b6b69;--line:#dbe4e2;
+  --primary:#0f766e;--primary-ink:#fff;--primary-soft:#e0f2ef;
+  --danger:#b42318;--danger-soft:#fdecea;--warn:#a15c07;--warn-soft:#fff4e0;--ok:#067647;--ok-soft:#e3f6ec;
+  --c1:#0f766e;--c2:#c2410c;--shadow:0 1px 3px rgba(0,0,0,.08);
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --bg:#0e1514;--card:#16201f;--text:#e6efed;--muted:#9bb0ad;--line:#2a3a38;
+    --primary:#2dd4bf;--primary-ink:#06201d;--primary-soft:#12302d;
+    --danger:#ff8a80;--danger-soft:#3a1816;--warn:#ffc56b;--warn-soft:#3a2a10;--ok:#6ee7a8;--ok-soft:#10301f;
+    --c1:#2dd4bf;--c2:#fb923c;--shadow:none;
+  }
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;background:var(--bg);color:var(--text);font-family:system-ui,-apple-system,"Segoe UI",Tahoma,"Noto Sans Arabic",Arial,sans-serif;font-size:16px;line-height:1.55}
+body{padding-bottom:calc(76px + env(safe-area-inset-bottom))}
+.wrap{max-width:640px;margin:0 auto;padding:0 16px}
+header.top{position:sticky;top:0;z-index:20;background:var(--primary);color:var(--primary-ink);padding:10px 0;padding-top:calc(10px + env(safe-area-inset-top))}
+header.top .wrap{display:flex;align-items:center;justify-content:space-between;gap:8px}
+header.top h1{font-size:17px;margin:0;font-weight:700}
+.chip{display:inline-block;background:rgba(255,255,255,.22);color:inherit;border-radius:99px;padding:2px 10px;font-size:13px;white-space:nowrap}
+main{padding-top:14px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px;margin-bottom:12px;box-shadow:var(--shadow)}
+.card h2{font-size:16px;margin:0 0 8px}
+.card h3{font-size:14.5px;margin:12px 0 6px}
+.muted{color:var(--muted)}.small{font-size:13px}.tiny{font-size:12px}
+.row{display:flex;gap:8px;align-items:center}.between{justify-content:space-between}.wrapf{flex-wrap:wrap}.grow{flex:1}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:8px}.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+button,.btn{font:inherit;border:1px solid var(--line);background:var(--card);color:var(--text);border-radius:12px;padding:11px 14px;min-height:44px;cursor:pointer}
+button:disabled{opacity:.45;cursor:not-allowed}
+.btn-p{background:var(--primary);color:var(--primary-ink);border-color:var(--primary);font-weight:700}
+.btn-d{background:var(--danger);color:#fff;border-color:var(--danger);font-weight:700}
+.btn-s{padding:7px 10px;min-height:36px;font-size:14px}
+.btn-block{width:100%}
+input[type=text],input[type=number],input[type=date],select,textarea{font:inherit;width:100%;min-height:44px;padding:9px 11px;border:1px solid var(--line);border-radius:10px;background:var(--bg);color:var(--text)}
+textarea{min-height:80px}
+input[type=range]{width:100%;accent-color:var(--primary)}
+label.f{display:block;font-size:13.5px;color:var(--muted);margin:10px 0 4px}
+.check{display:flex;gap:10px;align-items:flex-start;padding:9px 0;border-bottom:1px dashed var(--line)}
+.check:last-child{border-bottom:0}
+.check input{width:22px;height:22px;margin-top:2px;accent-color:var(--primary);flex:none}
+.alert{border-radius:12px;padding:11px 13px;margin-bottom:12px;font-size:14.5px;border:1px solid}
+.a-danger{background:var(--danger-soft);border-color:var(--danger);color:var(--danger)}
+.a-warn{background:var(--warn-soft);border-color:var(--warn);color:var(--warn)}
+.a-ok{background:var(--ok-soft);border-color:var(--ok);color:var(--ok)}
+.a-info{background:var(--primary-soft);border-color:var(--primary);color:var(--text)}
+.alert b{display:block;margin-bottom:2px}
+.alert ul{margin:4px 0 0;padding-inline-start:20px}
+.bar{height:10px;background:var(--line);border-radius:99px;overflow:hidden}
+.bar>i{display:block;height:100%;background:var(--primary);border-radius:99px}
+.kpi{text-align:center;background:var(--bg);border-radius:12px;padding:10px 4px}
+.kpi b{display:block;font-size:22px}
+.tag{display:inline-block;border-radius:6px;padding:1px 8px;font-size:12px;background:var(--primary-soft);color:var(--text);margin-inline-start:4px}
+.tag.warn{background:var(--warn-soft);color:var(--warn)}.tag.ok{background:var(--ok-soft);color:var(--ok)}.tag.bad{background:var(--danger-soft);color:var(--danger)}
+nav.tabs{position:fixed;bottom:0;inset-inline:0;z-index:30;background:var(--card);border-top:1px solid var(--line);padding-bottom:env(safe-area-inset-bottom)}
+nav.tabs .wrap{display:grid;grid-template-columns:repeat(5,1fr);gap:0;padding:0}
+nav.tabs button{border:0;border-radius:0;background:none;display:flex;flex-direction:column;align-items:center;gap:2px;font-size:11.5px;padding:7px 0;color:var(--muted);min-height:58px}
+nav.tabs button.on{color:var(--primary);font-weight:700}
+nav.tabs svg{width:24px;height:24px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.seg{display:flex;gap:6px;overflow-x:auto;padding-bottom:4px;margin-bottom:10px}
+.seg button{white-space:nowrap;padding:7px 13px;min-height:38px;font-size:14px}
+.seg button.on{background:var(--primary);color:var(--primary-ink);border-color:var(--primary);font-weight:700}
+/* workout */
+.ex{border:1px solid var(--line);border-radius:14px;margin-bottom:10px;background:var(--card);overflow:hidden}
+.ex.cur{border-color:var(--primary);box-shadow:0 0 0 2px var(--primary-soft)}
+.ex.done{opacity:.8}
+.ex-h{display:flex;gap:10px;align-items:center;padding:12px;cursor:pointer}
+.ex-n{width:30px;height:30px;border-radius:50%;background:var(--primary-soft);display:flex;align-items:center;justify-content:center;font-weight:700;flex:none}
+.ex.done .ex-n{background:var(--ok);color:#fff}
+.ex-b{padding:0 12px 12px}
+.figs{display:grid;grid-template-columns:1fr 1fr;gap:8px;background:var(--bg);border-radius:12px;padding:6px;margin-bottom:8px}
+.figs div{text-align:center;font-size:11px;color:var(--muted)}
+svg.fig{width:100%;height:auto;max-height:120px;direction:ltr}
+.fig .body polyline{fill:none;stroke:var(--primary);stroke-width:4.2;stroke-linecap:round;stroke-linejoin:round}
+.fig .body circle{fill:var(--primary)}.fig .floor{stroke:var(--line);stroke-width:2}
+.fig .prop{stroke:var(--muted);fill:none;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round}
+.setrow{display:grid;grid-template-columns:auto 1fr 1fr;gap:8px;align-items:center;padding:8px 0;border-top:1px dashed var(--line)}
+.setrow .lbl{font-size:13px;min-width:64px}
+.setrow .act{grid-column:1/-1;display:flex;gap:8px;align-items:center}
+.setrow.done{background:var(--ok-soft);border-radius:8px;padding:8px}
+.setrow input{min-height:40px;text-align:center}
+.timer-big{font-variant-numeric:tabular-nums;font-size:26px;font-weight:700;min-width:84px;text-align:center}
+#restbar{position:fixed;inset-inline:0;bottom:calc(62px + env(safe-area-inset-bottom));z-index:29;display:none}
+#restbar .in{max-width:640px;margin:0 auto 8px;padding:10px 14px;background:var(--primary);color:var(--primary-ink);border-radius:14px;display:flex;align-items:center;gap:8px;box-shadow:0 4px 14px rgba(0,0,0,.25)}
+#restbar.end .in{background:var(--warn);color:#fff;animation:pulse .8s infinite alternate}
+@keyframes pulse{to{filter:brightness(1.25)}}
+#restbar button{background:rgba(255,255,255,.2);color:inherit;border-color:transparent;min-height:38px;padding:6px 10px}
+#restbar .tm{font-size:24px;font-weight:700;font-variant-numeric:tabular-nums;flex:1;text-align:center}
+.toast{position:fixed;inset-inline:16px;bottom:calc(84px + env(safe-area-inset-bottom));z-index:50;max-width:608px;margin:0 auto;background:#222;color:#fff;padding:11px 14px;border-radius:12px;font-size:14.5px}
+.stat{display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px dashed var(--line);font-size:14.5px}
+.stat:last-child{border:0}
+table.t{width:100%;border-collapse:collapse;font-size:13.5px}
+table.t th,table.t td{padding:6px 4px;border-bottom:1px solid var(--line);text-align:start}
+.up{color:var(--ok)}.down{color:var(--danger)}
+details>summary{cursor:pointer;font-weight:600;padding:6px 0}
+.chart{width:100%;height:auto;direction:ltr}
+.chart text{fill:var(--muted);font-size:10px}
+.legend{display:flex;gap:14px;font-size:12.5px;color:var(--muted);margin-bottom:4px}
+.legend i{display:inline-block;width:18px;height:3px;vertical-align:middle;margin-inline-end:4px;border-radius:2px}
+.hide{display:none!important}
+#print{display:none}
+@media print{
+  body>*:not(#print){display:none!important}
+  #print{display:block!important;color:#000;background:#fff;font-size:12px;padding:8mm}
+  #print table{width:100%;border-collapse:collapse;margin-bottom:12px}
+  #print th,#print td{border:1px solid #999;padding:3px 5px;text-align:start;font-size:11px}
+  #print h1{font-size:18px}#print h2{font-size:14px;margin:14px 0 4px}
+}
+</style>
+</head>
+<body>
+<header class="top"><div class="wrap"><h1>متتبع التأهيل والتمرين</h1><span class="chip" id="phaseChip"></span></div></header>
+<div class="wrap"><main id="view"></main></div>
+<div id="restbar"><div class="in"><span class="small">راحة</span><button data-act="restAdj" data-d="-15">−15</button><span class="tm" id="restTime">0:00</span><button data-act="restAdj" data-d="15">+15</button><button data-act="restSkip">تخطي</button></div></div>
+<nav class="tabs"><div class="wrap" id="tabs"></div></nav>
+<div id="print"></div>
+<script>
+'use strict';
+/* =====================================================================
+   1) أدوات عامة
+   ===================================================================== */
+const $=(s,el=document)=>el.querySelector(s);
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const pad=n=>String(n).padStart(2,'0');
+const ymd=d=>`${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`;
+const today=()=>ymd(new Date());
+const parseD=s=>{const [y,m,d]=s.split('-').map(Number);return new Date(y,m-1,d)};
+const diffDays=(a,b)=>Math.round((parseD(b)-parseD(a))/864e5);
+const addDays=(s,n)=>{const d=parseD(s);d.setDate(d.getDate()+n);return ymd(d)};
+const LOC='ar-EG-u-nu-latn';
+const fmtD=s=>parseD(s).toLocaleDateString(LOC,{weekday:'long',day:'numeric',month:'long'});
+const fmtS=s=>parseD(s).toLocaleDateString(LOC,{day:'numeric',month:'short'});
+const weekStart=s=>{const d=parseD(s);const k=(d.getDay()+1)%7;return addDays(s,-k)}; // السبت بداية الأسبوع
+const mmss=t=>{t=Math.max(0,Math.round(t));return `${Math.floor(t/60)}:${pad(t%60)}`};
+const num=v=>{const n=parseFloat(String(v).replace(',','.'));return isNaN(n)?null:n};
+const avg=a=>a.length?a.reduce((x,y)=>x+y,0)/a.length:null;
+const r1=n=>n==null?'—':(Math.round(n*10)/10).toString();
+const uid=()=>Date.now().toString(36)+Math.random().toString(36).slice(2,6);
+
+/* =====================================================================
+   2) مكتبة التمارين (الاسم بالعربية + الإنجليزية)
+   unit: reps | sec | breaths | min    minPhase: أقل مرحلة مناسبة
+   ===================================================================== */
+const LIB={
+ warmup:{ar:'إحماء: مشي خفيف أو عجلة',en:'Light Walk / Bike',unit:'min',noRest:true,minPhase:1,cue:'وتيرة مريحة تستطيع معها الكلام. لا تقفل الركبة اليسرى للخلف أثناء المشي.'},
+ breathing:{ar:'التنفس الحجابي',en:'Diaphragmatic Breathing',unit:'breaths',noRest:true,minPhase:1,cue:'تنفّس ببطء عبر الأنف ودع البطن ترتفع بلطف. لا تشدّ عضلات قاع الحوض بقوة.'},
+ pelvicTilt:{ar:'إمالة الحوض',en:'Pelvic Tilts',unit:'reps',minPhase:1,cue:'حركة صغيرة وبطيئة بلا ألم، مع تنفس منتظم.'},
+ heelSlide:{ar:'انزلاق الكعب',en:'Heel Slides',unit:'reps',perSide:true,minPhase:1,cue:'اسحب الكعب نحو الجسم ثم مدّه ببطء دون قفل الركبة بقوة.',knee:true},
+ bridge:{ar:'جسر الأرداف',en:'Glute Bridge',unit:'reps',minPhase:1,cue:'ارفع الحوض بتحكم حتى خط مستقيم من الكتف للركبة، وتجنّب تقوّس الظهر.'},
+ sitStand:{ar:'قيام من الجلوس (كرسي مرتفع)',en:'Sit-to-Stand (high chair)',unit:'reps',minPhase:1,cue:'وزّع الحمل على الرجلين بالتساوي وقف دون قفل الركبة اليسرى للخلف.',knee:true},
+ boxSquat:{ar:'قيام/سكوات على صندوق',en:'Sit-to-Stand / Box Squat',unit:'reps',minPhase:2,cue:'مدى مريح فقط، لا سكوات عميق. وزّع الحمل بالتساوي.',knee:true,fig:'sitStand'},
+ hinge:{ar:'ثني الورك بوزن الجسم',en:'Hip Hinge (bodyweight)',unit:'reps',minPhase:1,cue:'ادفع الحوض للخلف بظهر محايد وركبتين مرنتين (غير مقفولتين).',knee:true},
+ hingeDB:{ar:'ثني الورك بدامبلز خفيفة',en:'Hip Hinge with Light Dumbbells',unit:'reps',weighted:true,minPhase:2,cue:'وزن خفيف. ركبتان مرنتان وظهر محايد.',knee:true,fig:'hinge'},
+ calfRaise:{ar:'رفع السمانة (بدعم)',en:'Supported Calf Raises',unit:'reps',minPhase:1,cue:'امسك دعامة، ارفع ببطء وانزل ببطء، دون قفل الركبة اليسرى للخلف.',knee:true},
+ deadBugEasy:{ar:'ديد باغ سهل',en:'Easy Dead Bug',unit:'reps',perSide:true,minPhase:1,cue:'حافظ على ثبات الجذع، وحرّك طرفاً واحداً بمدى صغير.',fig:'deadBug'},
+ deadBug:{ar:'ديد باغ',en:'Dead Bug',unit:'reps',perSide:true,minPhase:2,cue:'ظهر ثابت على الأرض، حركة بطيئة متحكَّم بها.'},
+ slBalance:{ar:'توازن على رجل واحدة (بدعم)',en:'Supported Single-Leg Balance',unit:'sec',perSide:true,minPhase:1,cue:'امسك الدعامة بخفة. وزّع الوزن على القدم كلها، وتجنّب قفل الركبة للخلف.',knee:true},
+ chestPress:{ar:'ضغط الصدر',en:'Chest Press',unit:'reps',weighted:true,minPhase:1,cue:'وزن خفيف إلى متوسط بحيث تبقى الشدة حوالي 5/10.'},
+ seatedRow:{ar:'سحب جالس',en:'Seated Row',unit:'reps',weighted:true,minPhase:1,cue:'اسحب بتحكم مع ثبات الكتفين والجذع.'},
+ latPulldown:{ar:'سحب علوي',en:'Lat Pulldown',unit:'reps',weighted:true,minPhase:1,cue:'اسحب نحو أعلى الصدر دون تقوّس الظهر.'},
+ hamCurl:{ar:'ثني الهامسترنج الخفيف',en:'Light Hamstring Curl',unit:'reps',weighted:true,minPhase:2,cue:'وزن خفيف، حركة بطيئة، ولا تقفل الركبة عند التمديد.',knee:true},
+ birdDog:{ar:'بيرد دوغ',en:'Bird Dog',unit:'reps',perSide:true,minPhase:2,cue:'حافظ على ثبات الحوض والظهر أثناء مدّ الذراع والرجل المعاكستين.'},
+ stepUp:{ar:'صعود درجة منخفضة',en:'Low Step-Ups',unit:'reps',perSide:true,minPhase:2,gate:'stepups',cue:'درجة منخفضة فقط. ادفع بالرجل التي على الدرجة وتجنّب قفل الركبة اليسرى.',knee:true},
+ squat:{ar:'سكوات بمدى متدرج',en:'Graded-Range Squat',unit:'reps',minPhase:3,cue:'مدى صغير إلى متوسط بلا ألم. لا سكوات عميق.',knee:true},
+ splitSquat:{ar:'سبليت سكوات بدعم (مدى صغير)',en:'Supported Split Squat',unit:'reps',perSide:true,weighted:true,minPhase:3,cue:'امسك دعامة وانزل مدى صغيراً فقط. لا اندفاع عميق.',knee:true},
+ farmer:{ar:'حمل الفلاحين (Farmer Carry)',en:'Farmer Carries',unit:'sec',weighted:true,minPhase:3,cue:'قامة معتدلة، خطوات ثابتة، وزن يسمح بتحكم كامل.',knee:true,fig:'farmer'},
+ coreLimb:{ar:'ثبات الجذع مع حركة الأطراف',en:'Core Stability with Limb Movement',unit:'reps',perSide:true,minPhase:3,cue:'ابقَ على الوضعية المحايدة للجذع أثناء حركة الأطراف.',fig:'birdDog'}
+};
+const UNITLBL={reps:'تكرار',sec:'ثانية',breaths:'أنفاس',min:'دقائق'};
+function exDef(id){return LIB[id]||(S&&S.customEx.find(c=>c.id===id))||{ar:id,en:id,unit:'reps'}}
+
+/* =====================================================================
+   3) رسوم توضيحية بسيطة (منظر جانبي، وضعية البداية ← النهاية)
+   ===================================================================== */
+const SUP=(hx,hy)=>({h:[hx,hy]});
+const FIG={
+ breathing:[{h:[20,74],l:[[[28,76],[62,76]],[[62,76],[78,52],[90,76]]]},{h:[20,74],l:[[[28,76],[45,70],[62,76]],[[62,76],[78,52],[90,76]]]}],
+ pelvicTilt:[{h:[20,74],l:[[[28,76],[42,73],[62,71]],[[62,71],[78,50],[90,76]]]},{h:[20,74],l:[[[28,76],[62,76]],[[62,76],[78,52],[90,76]]]}],
+ heelSlide:[{h:[20,74],l:[[[28,76],[62,76]],[[62,76],[78,52],[90,76]],[[62,77],[104,77]]]},{h:[20,74],l:[[[28,76],[62,76]],[[62,76],[104,76]],[[62,77],[104,77]]]}],
+ bridge:[{h:[20,74],l:[[[28,76],[62,76]],[[62,76],[78,52],[90,76]]]},{h:[20,74],l:[[[28,76],[62,56]],[[62,56],[82,52],[90,76]]]}],
+ sitStand:[{h:[47,20],p:'<path class="prop" d="M26 56H64M30 56V82M60 56V82M26 56V30"/>',l:[[[46,52],[46,28]],[[46,52],[68,52],[68,80]],[[46,32],[58,42],[68,44]]]},{h:[62,16],p:'<path class="prop" d="M26 56H64M30 56V82M60 56V82M26 56V30"/>',l:[[[62,48],[62,24]],[[62,48],[62,66],[62,82]],[[62,28],[74,36],[86,36]]]}],
+ hinge:[{h:[60,15],l:[[[60,48],[60,24]],[[60,48],[60,66],[60,82]],[[60,26],[60,46]]]},{h:[86,34],l:[[[50,48],[78,36]],[[50,48],[52,66],[54,82]],[[78,36],[80,58]]]}],
+ calfRaise:[{h:[70,15],p:'<path class="prop" d="M98 8V82"/>',l:[[[70,48],[70,24]],[[70,48],[70,66],[70,82]],[[70,82],[78,82]],[[70,28],[84,36],[96,34]]]},{h:[70,7],p:'<path class="prop" d="M98 8V82"/>',l:[[[70,40],[70,16]],[[70,40],[70,58],[70,74]],[[70,74],[78,82]],[[70,20],[84,28],[96,26]]]}],
+ deadBug:[{h:[20,74],l:[[[28,76],[62,76]],[[34,76],[34,46]],[[62,76],[72,52],[92,52]]]},{h:[20,74],l:[[[28,76],[62,76]],[[34,76],[34,46]],[[32,72],[6,68]],[[62,76],[72,52],[92,52]],[[62,76],[104,70]]]}],
+ slBalance:[{h:[60,15],p:'<path class="prop" d="M94 8V82"/>',l:[[[60,48],[60,24]],[[60,48],[60,66],[60,82]],[[60,28],[76,36],[94,36]]]},{h:[60,15],p:'<path class="prop" d="M94 8V82"/>',l:[[[60,48],[60,24]],[[60,48],[60,66],[60,82]],[[60,48],[74,56],[70,72]],[[60,28],[76,36],[94,36]]]}],
+ chestPress:[{h:[47,20],p:'<path class="prop" d="M36 24V56M36 56H72"/>',l:[[[46,52],[46,28]],[[46,52],[70,52],[70,80]],[[46,30],[52,42],[60,34]]]},{h:[47,20],p:'<path class="prop" d="M36 24V56M36 56H72"/>',l:[[[46,52],[46,28]],[[46,52],[70,52],[70,80]],[[46,30],[66,32],[84,32]]]}],
+ seatedRow:[{h:[35,20],p:'<path class="prop" d="M24 56H50M84 40V70M84 32H116"/>',l:[[[34,52],[34,28]],[[34,52],[80,52]],[[36,30],[60,32],[84,32]]]},{h:[35,20],p:'<path class="prop" d="M24 56H50M84 40V70M50 36H116"/>',l:[[[34,52],[34,28]],[[34,52],[80,52]],[[36,30],[26,40],[50,36]]]}],
+ latPulldown:[{h:[49,22],p:'<path class="prop" d="M36 56H72M62 -4H80"/>',l:[[[48,52],[48,30]],[[48,52],[68,52],[68,80]],[[48,32],[56,14],[62,-2]]]},{h:[49,22],p:'<path class="prop" d="M36 56H72M50 34H80"/>',l:[[[48,52],[48,30]],[[48,52],[68,52],[68,80]],[[48,32],[40,44],[54,36]]]}],
+ hamCurl:[{h:[20,74],l:[[[28,76],[62,76]],[[62,76],[104,76]]]},{h:[20,74],l:[[[28,76],[62,76]],[[62,76],[90,76],[90,50]]]}],
+ birdDog:[{h:[22,44],l:[[[32,54],[74,52]],[[32,54],[30,80]],[[74,52],[74,78],[94,80]]]},{h:[22,44],l:[[[32,54],[74,52]],[[32,54],[30,80]],[[32,54],[8,50]],[[74,52],[74,78],[94,80]],[[74,52],[108,52]]]}],
+ stepUp:[{h:[56,15],p:'<path class="prop" d="M64 66H96V82H64Z"/>',l:[[[56,48],[56,24]],[[56,48],[68,58],[74,66]],[[56,48],[56,66],[56,82]]]},{h:[80,-1],p:'<path class="prop" d="M64 66H96V82H64Z"/>',l:[[[80,32],[80,8]],[[80,32],[80,50],[80,66]],[[80,32],[86,46],[84,58]]]}],
+ squat:[{h:[60,15],l:[[[60,48],[60,24]],[[60,48],[60,66],[60,82]],[[60,28],[74,36],[84,36]]]},{h:[60,24],l:[[[50,56],[58,32]],[[50,56],[68,64],[58,82]],[[58,34],[74,38],[84,38]]]}],
+ splitSquat:[{h:[58,14],p:'<path class="prop" d="M100 8V82"/>',l:[[[58,46],[58,22]],[[58,46],[72,64],[74,82]],[[58,46],[48,66],[38,82]],[[58,26],[78,34],[100,32]]]},{h:[58,22],p:'<path class="prop" d="M100 8V82"/>',l:[[[58,54],[58,30]],[[58,54],[74,66],[74,82]],[[58,54],[46,68],[34,82]],[[58,34],[78,40],[100,38]]]}],
+ farmer:[{h:[60,15],p:'<path class="prop" d="M52 48H68M52 54H68"/>',l:[[[60,48],[60,24]],[[60,48],[68,66],[74,82]],[[60,48],[52,66],[44,82]],[[60,26],[60,50]]]},{h:[60,15],p:'<path class="prop" d="M52 48H68M52 54H68"/>',l:[[[60,48],[60,24]],[[60,48],[52,66],[50,82]],[[60,48],[68,66],[70,82]],[[60,26],[60,50]]]}],
+ warmup:[{h:[60,15],l:[[[60,48],[60,24]],[[60,48],[68,66],[74,82]],[[60,48],[52,66],[44,82]],[[60,28],[68,40],[72,48]],[[60,28],[52,40],[48,48]]]},{h:[60,15],l:[[[60,48],[60,24]],[[60,48],[52,66],[50,82]],[[60,48],[68,66],[70,82]],[[60,28],[52,40],[56,48]],[[60,28],[68,40],[64,48]]]}]
+};
+function figSvg(p){
+  const ls=p.l.map(pts=>`<polyline points="${pts.map(q=>q.join(',')).join(' ')}"/>`).join('');
+  return `<svg class="fig" viewBox="0 -8 120 98" aria-hidden="true"><line class="floor" x1="4" y1="82" x2="116" y2="82"/>${p.p||''}<g class="body">${ls}<circle cx="${p.h[0]}" cy="${p.h[1]}" r="6.5"/></g></svg>`;
+}
+function figs(id){
+  const d=exDef(id);const key=d.fig||id;const f=FIG[key]||FIG.squat;
+  return `<div class="figs"><div>${figSvg(f[0])}البداية</div><div>${figSvg(f[1])}النهاية</div></div>`;
+}
+
+/* =====================================================================
+   4) البرنامج الافتراضي (قابل للتعديل من شاشة «البرنامج»)
+   عنصر: {ex, sets, reps, repsMax?, perSide?, optional?, weighted?, note?}
+   ===================================================================== */
+const it=(ex,sets,reps,o={})=>Object.assign({ex,sets,reps},o);
+function defaultPlan(){
+  const wu=it('warmup',1,5), br=it('breathing',1,5,{repsMax:8});
+  const p1=[wu,br,it('pelvicTilt',2,10),it('heelSlide',2,8),it('bridge',2,8),it('sitStand',2,8),it('hinge',2,10),it('calfRaise',2,10),it('deadBugEasy',2,6),it('slBalance',2,15),
+    it('chestPress',2,10,{repsMax:12,optional:true}),it('seatedRow',2,10,{repsMax:12,optional:true}),it('latPulldown',2,10,{repsMax:12,optional:true})];
+  const clone=a=>JSON.parse(JSON.stringify(a));
+  return {
+    1:{A:clone(p1),B:clone(p1),C:clone(p1)},
+    2:{
+      A:[wu,br,it('boxSquat',3,10),it('bridge',3,12),it('calfRaise',3,12),it('deadBug',2,8),it('chestPress',3,10)],
+      B:[wu,br,it('hingeDB',2,10),it('hamCurl',2,10),it('birdDog',2,6),it('seatedRow',3,10),it('deadBug',2,8)],
+      C:[wu,it('boxSquat',3,10),it('bridge',3,12),it('hingeDB',2,10),it('calfRaise',3,12),it('birdDog',2,6),it('seatedRow',3,10),it('chestPress',3,10),it('stepUp',2,8,{optional:true,note:'فقط إذا سمح تقييم الركبة'})]
+    },
+    3:{
+      A:[wu,br,it('squat',3,8,{note:'حسب الجاهزية'}),it('stepUp',3,8),it('calfRaise',3,12),it('coreLimb',2,8),it('chestPress',3,10)],
+      B:[wu,it('hingeDB',3,8,{note:'مقاومة أعلى تدريجياً'}),it('splitSquat',2,8,{note:'مدى صغير'}),it('hamCurl',3,10),it('farmer',3,30),it('seatedRow',3,10)],
+      C:[wu,it('squat',3,8),it('bridge',3,12),it('stepUp',3,8),it('farmer',3,30),it('coreLimb',2,8),it('seatedRow',3,10)]
+    },
+    4:{
+      A:[wu,it('squat',3,10),it('hingeDB',3,8),it('stepUp',3,8),it('farmer',3,40),it('coreLimb',2,10)],
+      B:[wu,it('splitSquat',3,8),it('hamCurl',3,10),it('seatedRow',3,10),it('chestPress',3,10),it('latPulldown',3,10)],
+      C:[wu,it('squat',3,10),it('hingeDB',3,8),it('farmer',3,40),it('coreLimb',2,10),it('seatedRow',3,10)]
+    }
+  };
+}
+
+/* =====================================================================
+   5) قاعدة البيانات (localStorage) والحالة
+   ===================================================================== */
+const KEY='rehab.tracker.v1';
+function defaultState(){return{
+  v:1,onboarded:false,programStart:null,phase:0,phaseStart:null,
+  settings:{showEn:true,rest:75,sound:true,vibrate:true},
+  medical:{knee:null,ankleHip:null,balance:null,pelvic:null,urology:null,stepups:null},
+  plan:defaultPlan(),customEx:[],sessions:[],assessments:[],reviews:[],active:null,
+  ui:{tab:'home',more:null,weekOffset:0,fin:null,result:null,planPhase:1,planSess:'A',chartEx:'',chartMetric:'weight'}
+}}
+let S;
+function load(){
+  try{const raw=localStorage.getItem(KEY);if(raw){const o=JSON.parse(raw);const d=defaultState();S=Object.assign(d,o);S.settings=Object.assign(d.settings,o.settings||{});S.medical=Object.assign(d.medical,o.medical||{});S.ui=Object.assign(d.ui,{tab:'home'});return}}catch(e){}
+  S=defaultState();
+}
+let saveFail=false;
+function save(){try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){if(!saveFail){saveFail=true;toast('تعذّر الحفظ على المتصفح. صدّر نسخة احتياطية من «المزيد ← تصدير».')}}}
+load();
+
+/* =====================================================================
+   6) ثوابت: المراحل، الجدول، الأعراض، الفحوص الطبية
+   ===================================================================== */
+const PHASES={0:{n:'التقييم الأولي',e:'Phase 0 – Assessment'},1:{n:'الأساس',e:'Phase 1 – Foundation'},2:{n:'تطوير القوة',e:'Phase 2 – Strength Development'},3:{n:'القوة الوظيفية والثبات',e:'Phase 3 – Functional Strength & Stability'},4:{n:'العودة للتدريب',e:'Phase 4 – Return to Training'}};
+const SCHED={6:'A',0:'R',1:'B',2:'X',3:'C',4:'R',5:'X'}; // getDay(): السبت=6
+const SCHED_ORDER=[6,0,1,2,3,4,5];
+const DAYN={6:'السبت',0:'الأحد',1:'الاثنين',2:'الثلاثاء',3:'الأربعاء',4:'الخميس',5:'الجمعة'};
+const SNAME={A:'Strength A',B:'Strength B',C:'Strength C',R:'تعافٍ / مشي خفيف',X:'راحة'};
+const MED=[
+ ['knee','تقييم التحكم في الركبة اليسرى والـ Hyperextension'],
+ ['ankleHip','قياس حركة الكاحل والورك'],
+ ['balance','تقييم التوازن وتوزيع الحمل'],
+ ['pelvic','تقييم قاع الحوض لدى مختص Male Pelvic Health'],
+ ['urology','مراجعة طبيب المسالك البولية بشأن التغيرات الحديثة في التحكم البولي والقذف'],
+ ['stepups','تقييم الركبة سمح بتمارين Step-Ups (شرط لتنفيذها)']
+];
+const MED_REQ=['knee','pelvic','urology'];
+const SYMP={
+ knee:[['pain','ألم واضح في الركبة','stop'],['swelling','تورم','stop'],['locking','قفل في الركبة','stop'],['instability','عدم ثبات أو خذلان الركبة','stop']],
+ other:[['hyper','صعوبة في تجنّب قفل الركبة اليسرى للخلف','caution'],['back','ألم في أسفل الظهر','caution'],['pelvic','انزعاج في الحوض أو الفخذ','caution'],['urinary','تغيّر جديد في التحكم البولي أو القذف','doctor']],
+ red:[['retention','احتباس بول جديد','urgent'],['incont','فقدان التحكم في البول أو البراز','urgent'],['numb','تنميل في منطقة العجان','urgent'],['weak','ضعف متزايد في الساقين','urgent']]
+};
+const SYMP_LBL={};Object.values(SYMP).flat().forEach(([k,l])=>SYMP_LBL[k]=l);
+const STOPK=SYMP.knee.map(x=>x[0]),REDK=SYMP.red.map(x=>x[0]);
+const MIN_SESS={1:6,2:12,3:12};
+const RISKY=/jump|run|sprint|plyo|deep|lunge|قفز|جري|ركض|اندفاع|سكوات عميق/i;
+const KEGEL=/kegel|كيجل|stop.*(urine|flow)|إيقاف.*(البول|التبول)/i;
+
+/* =====================================================================
+   7) منطق البرنامج: الأسبوع، الحصة القادمة، الجاهزية
+   ===================================================================== */
+function weekNo(){return S.programStart?Math.max(1,Math.floor(diffDays(S.programStart,today())/7)+1):0}
+function expectedPhase(w){return w<=2?1:w<=6?2:w<=10?3:4}
+function strengthSessions(){return S.sessions.filter(s=>s.type!=='R')}
+function completedStrength(){return strengthSessions().filter(s=>!s.stopped)}
+function progressPct(){return Math.min(100,Math.round(completedStrength().length/36*100))}
+function nextSession(){
+  const t=today();
+  const doneToday=S.sessions.some(s=>s.date===t&&s.type!=='R'&&!s.stopped);
+  for(let i=doneToday?1:0;i<=8;i++){const d=addDays(t,i);const ty=SCHED[parseD(d).getDay()];if(['A','B','C'].includes(ty))return{date:d,type:ty,i}}
+  return{date:t,type:'A',i:0};
+}
+function readiness(){
+  const ph=S.phase;
+  if(ph===0)return{status:'phase0',crit:[],title:'ابدأ بالتقييم الأولي'};
+  const inPh=strengthSessions().filter(s=>s.phase===ph);
+  const done=inPh.filter(s=>!s.stopped);
+  const last3=done.slice(-3),last4=inPh.slice(-4);
+  const recent=S.sessions.slice(-3);
+  const red=recent.some(s=>(s.symptoms||[]).some(k=>REDK.includes(k)));
+  const crit=[];
+  const need=MIN_SESS[ph];
+  if(need)crit.push({ok:done.length>=need,label:'عدد الحصص المكتملة في المرحلة',detail:`${done.length} من ${need} كحد أدنى (وليس شرطاً كافياً وحده)`});
+  crit.push({ok:last3.length>=3&&avg(last3.map(s=>s.pain||0))<=3&&Math.max(...last3.map(s=>s.pain||0))<=4,label:'الألم منخفض في آخر 3 حصص',detail:last3.length?`المتوسط ${r1(avg(last3.map(s=>s.pain||0)))}/10`:'لا توجد بيانات كافية'});
+  const stops=last4.filter(s=>s.stopped||(s.symptoms||[]).some(k=>STOPK.includes(k)));
+  crit.push({ok:last4.length>=3&&stops.length===0,label:'لا ألم واضح/تورم/قفل/عدم ثبات أو إيقاف للحصة (آخر 4 حصص)',detail:stops.length?`سُجّلت ${stops.length} حصة بأعراض أو إيقاف`:last4.length<3?'بيانات غير كافية':'لا أعراض مسجّلة'});
+  crit.push({ok:last3.length>=3&&avg(last3.map(s=>s.rpe||0))<=6.5,label:'شدة الجهد مناسبة (RPE ≤ 6.5)',detail:last3.length?`المتوسط ${r1(avg(last3.map(s=>s.rpe||0)))}/10`:'لا توجد بيانات كافية'});
+  crit.push({ok:last3.length>=3&&avg(last3.map(s=>s.control||0))>=4,label:'التحكم في الحركة جيد (تقييمك ≥ 4/5)',detail:last3.length?`المتوسط ${r1(avg(last3.map(s=>s.control||0)))}/5`:'لا توجد بيانات كافية'});
+  const ass=S.assessments.length?S.assessments[S.assessments.length-1]:null;
+  crit.push({ok:!!ass&&diffDays(ass.date,today())<=14,label:'سُجّل اختبار متابعة خلال آخر 14 يوماً',detail:ass?`آخر اختبار: ${fmtS(ass.date)}`:'لا يوجد اختبار'});
+  if(ph>=1&&ph<4){const miss=MED_REQ.filter(k=>!S.medical[k]);crit.push({ok:miss.length===0,label:'التقييمات الطبية المطلوبة مكتملة',detail:miss.length?'ينقص: '+miss.map(k=>MED.find(m=>m[0]===k)[1].split(' ').slice(0,3).join(' ')+'…').join('، '):'مكتملة'})}
+  if(red)return{status:'urgent',crit,title:'أعراض تستدعي تقييماً طبياً عاجلاً'};
+  if(ph>=4)return{status:'final',crit,title:'أنت في مرحلة العودة للتدريب'};
+  const allOk=crit.every(c=>c.ok);
+  return{status:allOk?'ready':'hold',crit,title:allOk?'مؤشرات الجاهزية جيدة للتدرج':'ثبّت المرحلة الحالية'};
+}
+function assessSession(s){
+  const msgs=[];let level='ok';const up=l=>{const o=['ok','caution','stop','urgent'];if(o.indexOf(l)>o.indexOf(level))level=l};
+  const sy=s.symptoms||[];
+  const reds=sy.filter(k=>REDK.includes(k));
+  if(reds.length){up('urgent');msgs.push('ظهرت أعراض تستدعي تقييماً طبياً عاجلاً: '+reds.map(k=>SYMP_LBL[k]).join('، ')+'. لا تواصل التمرين، وتواصل مع الطبيب أو الطوارئ اليوم.')}
+  const stops=sy.filter(k=>STOPK.includes(k));
+  if(stops.length||s.stopped){up('stop');msgs.push('أُوقفت الحصة أو ظهر عرض في الركبة ('+(stops.map(k=>SYMP_LBL[k]).join('، ')||'إيقاف بسبب عرض')+'). تم تسجيل العرض. أوقف التمرين، ولا تتدرّج للمرحلة التالية، وراجع مختصاً إذا استمر.')}
+  if((s.pain||0)>=5){up('caution');msgs.push('مستوى الألم مرتفع ('+s.pain+'/10): ثبّت المرحلة الحالية وخفّف الحمل في الحصة القادمة.')}
+  if(sy.includes('urinary')){up('caution');msgs.push('سجّلت تغيراً في التحكم البولي أو القذف: لا تؤجّل مراجعة طبيب المسالك البولية.')}
+  if(sy.some(k=>['back','pelvic','hyper'].includes(k))){up('caution');msgs.push('سُجّلت أعراض أخرى (ظهر/حوض/ركبة خلفية): راقبها في الحصة القادمة وخفّف المدى إذا لزم.')}
+  return{level,msgs};
+}
+/* آخر أداء لتمرين + اقتراح تدرّج بمتغيّر واحد فقط (إما التكرارات أو الوزن، لا الاثنين معاً) */
+function perfOf(sess,exId){
+  const e=sess.exercises.find(x=>x.ex===exId);if(!e)return null;
+  const rows=e.rows.filter(r=>r.done);if(!rows.length)return null;
+  const w=rows.map(r=>num(r.weight)).filter(x=>x!=null),r=rows.map(r=>num(r.reps)||0);
+  return{date:sess.date,avgW:w.length?avg(w):null,avgR:avg(r),maxW:w.length?Math.max(...w):null,rows,sess};
+}
+function lastPerfs(exId,n=2,beforeId){
+  const out=[];for(let i=S.sessions.length-1;i>=0&&out.length<n;i--){const s=S.sessions[i];if(s.id===beforeId)continue;const p=perfOf(s,exId);if(p)out.push(p)}return out;
+}
+function suggestion(exDefn,item){
+  const L=lastPerfs(item.ex,2);if(L.length<2)return null;
+  const good=L.every(p=>p.sess.rpe<=6&&(p.sess.pain||0)<=3&&!p.sess.stopped&&!(p.sess.symptoms||[]).some(k=>STOPK.includes(k)));
+  if(!good)return null;
+  const top=item.repsMax||item.reps;
+  const hitTop=L.every(p=>p.rows.length>=item.sets&&p.rows.every(r=>(num(r.reps)||0)>=top));
+  if(!hitTop)return null;
+  if(item.repsMax&&exDefn.weighted)return 'أنجزت أعلى نطاق للتكرارات مرتين بجهد مريح. جرّب رفع الوزن قليلاً مع العودة لأدنى التكرارات — غيّر متغيراً واحداً فقط.';
+  if(!exDefn.weighted&&exDefn.unit==='reps')return 'أداء مستقر ومريح. إن رغبت، زِد تكراراً أو اثنين فقط (دون إضافة وزن) أو ثبّت كما هو.';
+  return null;
+}
+
+/* =====================================================================
+   8) مؤقتات، صوت، اهتزاز، إشعارات
+   ===================================================================== */
+let actx=null;
+function audio(){try{actx=actx||new (window.AudioContext||window.webkitAudioContext)();if(actx.state==='suspended')actx.resume()}catch(e){}}
+function beep(n=3){
+  if(S.settings.vibrate&&navigator.vibrate)navigator.vibrate([200,100,200]);
+  if(!S.settings.sound||!actx)return;
+  for(let i=0;i<n;i++){try{const o=actx.createOscillator(),g=actx.createGain();o.frequency.value=880;g.gain.value=.15;o.connect(g);g.connect(actx.destination);const t=actx.currentTime+i*.28;o.start(t);o.stop(t+.18)}catch(e){}}
+}
+let toastT;
+function toast(m){let t=$('.toast');if(t)t.remove();t=document.createElement('div');t.className='toast';t.textContent=m;document.body.appendChild(t);clearTimeout(toastT);toastT=setTimeout(()=>t.remove(),4200)}
+let wake=null;
+async function wakeLock(){try{if('wakeLock' in navigator&&S.active)wake=await navigator.wakeLock.request('screen')}catch(e){}}
+document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible'&&S.active)wakeLock()});
+
+/* =====================================================================
+   9) رسوم بيانية (SVG بدون مكتبات)
+   ===================================================================== */
+function lineChart(series,labels,o={}){
+  const W=320,H=o.h||160,L=30,R=8,T=8,B=22;
+  const ys=series.flatMap(s=>s.data).filter(v=>v!=null);
+  if(labels.length<2||ys.length<2)return '<p class="muted small">بيانات غير كافية للرسم بعد (تحتاج قياسين على الأقل).</p>';
+  let lo=o.min!=null?o.min:Math.min(...ys),hi=o.max!=null?o.max:Math.max(...ys);if(lo===hi){lo-=1;hi+=1}
+  const pd=(hi-lo)*.08;if(o.min==null)lo-=pd;if(o.max==null)hi+=pd;
+  const X=i=>L+(W-L-R)*(i/(labels.length-1)),Y=v=>T+(H-T-B)*(1-(v-lo)/(hi-lo));
+  let g='';for(let k=0;k<=3;k++){const v=lo+(hi-lo)*k/3,y=Y(v);g+=`<line x1="${L}" x2="${W-R}" y1="${y}" y2="${y}" stroke="var(--line)" stroke-width="1"/><text x="${L-4}" y="${y+3}" text-anchor="end">${r1(v)}</text>`}
+  const step=Math.ceil(labels.length/6);labels.forEach((lb,i)=>{if(i%step===0||i===labels.length-1)g+=`<text x="${X(i)}" y="${H-6}" text-anchor="middle">${esc(lb)}</text>`});
+  series.forEach((s,si)=>{
+    const col=si===0?'var(--c1)':'var(--c2)';let d='',pen=false;
+    s.data.forEach((v,i)=>{if(v==null){pen=false;return}d+=(pen?'L':'M')+X(i)+' '+Y(v)+' ';pen=true});
+    g+=`<path d="${d}" fill="none" stroke="${col}" stroke-width="2.4" ${si?'stroke-dasharray="6 4"':''} stroke-linejoin="round"/>`;
+    s.data.forEach((v,i)=>{if(v!=null)g+=`<circle cx="${X(i)}" cy="${Y(v)}" r="3.2" fill="${col}"><title>${esc(s.name)}: ${r1(v)} (${esc(labels[i])})</title></circle>`});
+  });
+  const lg=series.map((s,si)=>`<span><i style="background:${si?'var(--c2)':'var(--c1)'}"></i>${esc(s.name)}</span>`).join('');
+  return `<div class="legend">${lg}</div><svg class="chart" viewBox="0 0 ${W} ${H}" role="img">${g}</svg>`;
+}
+function barChart(vals,labels,target){
+  const W=320,H=130,L=26,R=6,T=8,B=22,mx=Math.max(target||0,...vals,1);
+  const bw=(W-L-R)/vals.length;let g='';
+  for(let k=0;k<=mx;k++){const y=T+(H-T-B)*(1-k/mx);g+=`<line x1="${L}" x2="${W-R}" y1="${y}" y2="${y}" stroke="var(--line)"/><text x="${L-4}" y="${y+3}" text-anchor="end">${k}</text>`}
+  vals.forEach((v,i)=>{const h=(H-T-B)*(v/mx),x=L+bw*i+bw*.18;g+=`<rect x="${x}" y="${H-B-h}" width="${bw*.64}" height="${h}" rx="3" fill="var(--c1)"><title>${esc(labels[i])}: ${v}</title></rect><text x="${x+bw*.32}" y="${H-6}" text-anchor="middle">${esc(labels[i])}</text>`});
+  if(target){const y=T+(H-T-B)*(1-target/mx);g+=`<line x1="${L}" x2="${W-R}" y1="${y}" y2="${y}" stroke="var(--c2)" stroke-dasharray="5 4" stroke-width="1.6"/>`}
+  return `<svg class="chart" viewBox="0 0 ${W} ${H}" role="img">${g}</svg>`;
+}
+
+/* =====================================================================
+   10) الواجهة الرئيسية
+   ===================================================================== */
+const ICONS={
+ home:'<path d="M3 11l9-8 9 8v9a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"/>',
+ workout:'<path d="M6 8v8M3 10v4M18 8v8M21 10v4M6 12h12"/>',
+ progress:'<path d="M4 20V10M10 20V4M16 20v-8M22 20H2"/>',
+ assess:'<path d="M9 4h6a1 1 0 0 1 1 1v2H8V5a1 1 0 0 1 1-1zM6 7h12v13H6zM9 12h6M9 16h4"/>',
+ more:'<circle cx="5" cy="12" r="1.6"/><circle cx="12" cy="12" r="1.6"/><circle cx="19" cy="12" r="1.6"/>'
+};
+const TABS=[['home','الرئيسية'],['workout','الحصة'],['progress','التقدم'],['assess','التقييم'],['more','المزيد']];
+function render(){
+  $('#phaseChip').textContent=S.onboarded?`المرحلة ${S.phase}`+(S.phase?` · أسبوع ${Math.min(weekNo(),12)}`:''):'';
+  $('#tabs').innerHTML=TABS.map(([k,l])=>`<button class="${S.ui.tab===k?'on':''}" data-act="nav" data-t="${k}"><svg viewBox="0 0 24 24">${ICONS[k]}</svg>${l}</button>`).join('');
+  $('nav.tabs').classList.toggle('hide',!S.onboarded);
+  const v=$('#view');
+  if(!S.onboarded){v.innerHTML=vOnboard();return}
+  const m={home:vHome,workout:vWorkout,progress:vProgress,assess:vAssess,more:vMore}[S.ui.tab];
+  v.innerHTML=m();
+  renderRest();
+}
+function go(tab,more){S.ui.tab=tab;if(more!==undefined)S.ui.more=more;render();window.scrollTo(0,0)}
+
+/* ---------- تنبيهات السلامة الثابتة ---------- */
+const REDFLAGS_HTML=`<ul><li>احتباس بول جديد</li><li>فقدان التحكم في البول أو البراز</li><li>تنميل في منطقة العجان</li><li>ضعف متزايد في الساقين</li></ul>`;
+function urologyCard(){
+  const d=S.medical.urology;
+  return `<div class="alert ${d?'a-ok':'a-warn'}"><b>${d?'تمت مراجعة طبيب المسالك البولية ('+fmtS(d)+')':'مراجعة طبيب المسالك البولية مطلوبة'}</b>
+  ${d?'استمر في الإبلاغ عن أي تغيّر جديد.':'يلزم عرض التغير الحديث في التحكم البولي والقذف على طبيب مسالك بولية، ولا ينبغي تأجيل ذلك بسبب التمرين.'}
+  <details><summary>علامات تستدعي تقييماً طبياً عاجلاً</summary>${REDFLAGS_HTML}<div class="small">عند ظهور أي منها: أوقف التمرين وتواصل مع الطبيب أو الطوارئ فوراً.</div></details>
+  <div class="tiny" style="margin-top:6px">لا تمارين كيجل مكثفة دون تقييم مختص، ولا تُمارَس مقاطعة تدفق البول كتمرين.</div></div>`;
+}
+
+/* ---------- البداية ---------- */
+function vOnboard(){return `<div class="card"><h2>مرحباً بك</h2>
+<p>تطبيق لمتابعة برنامج التأهيل والعودة التدريجية للتمرين على 12 أسبوعاً (3 حصص أسبوعياً). بياناتك تُحفظ على هذا الجهاز فقط وتعمل بدون إنترنت.</p>
+<div class="alert a-info"><b>تنبيه مهم</b>هذا التطبيق أداة تنظيم ومتابعة، وليس تشخيصاً أو بديلاً عن الطبيب أو المعالج. لا يشخّص أي مشكلة في الحوض أو العصعص أو المفصل العجزي الحرقفي، ولا تُعدّ اختبارات المتابعة دليلاً على ذلك. ولا ينقلك لمرحلة أعلى بمجرد مرور الأسابيع؛ الانتقال يعتمد على جاهزيتك وتأكيدك.</div>
+<div class="alert a-danger"><b>أوقف التمرين وتواصل مع الطبيب فوراً عند:</b>${REDFLAGS_HTML}<div class="small">وعند الألم الواضح أو التورم أو القفل أو عدم الثبات: أوقف التمرين وسجّل العرض.</div></div>
+<label class="check"><input type="checkbox" id="agree"><span>فهمت التنبيهات أعلاه، وسأراجع طبيب المسالك البولية بشأن التغيّر الحديث في التحكم البولي والقذف.</span></label>
+<button class="btn-p btn-block" data-act="onboard" style="margin-top:10px">ابدأ</button></div>`}
+
+/* ---------- الرئيسية ---------- */
+function vHome(){
+  const ph=S.phase,wk=weekNo(),ns=nextSession(),rd=readiness();
+  const lastRev=S.reviews.length?S.reviews[S.reviews.length-1]:null;
+  let h='';
+  h+=urologyCard();
+  if(ph===0){
+    const n=MED.slice(0,5).filter(m=>S.medical[m[0]]).length;
+    h+=`<div class="card"><h2>المرحلة 0 – التقييم الأولي</h2><p class="small muted">أكمل ما يلزم من هذه التقييمات مع المختصين قبل بدء المرحلة 1 (يمكنك البدء قبل اكتمالها بعد تأكيد صريح، لكن التدرج بعد المرحلة 1 مشروط بها).</p>
+    ${medList(MED.slice(0,5))}<div class="bar" style="margin:8px 0"><i style="width:${n/5*100}%"></i></div>
+    <button class="btn-p btn-block" data-act="startPhase1">بدء المرحلة 1 – الأساس</button></div>`;
+  }else{
+    const pct=progressPct();
+    h+=`<div class="card"><div class="row between"><h2>${PHASES[ph].n}</h2><span class="tag">${PHASES[ph].e.split(' – ')[0]}</span></div>
+    <div class="grid3" style="margin:8px 0"><div class="kpi"><b>${Math.min(wk,12)}</b><span class="small muted">من 12 أسبوعاً</span></div><div class="kpi"><b>${completedStrength().length}</b><span class="small muted">حصة مكتملة</span></div><div class="kpi"><b>${pct}%</b><span class="small muted">إنجاز البرنامج</span></div></div>
+    <div class="bar"><i style="width:${pct}%"></i></div>
+    ${ph<4&&expectedPhase(wk)>ph?`<p class="small muted" style="margin:8px 0 0">الجدول الزمني التقريبي يشير إلى مرحلة أعلى، لكنك تبقى في مرحلتك حتى تتحقق الجاهزية وتؤكد أنت الانتقال.</p>`:''}</div>`;
+    const isToday=ns.i===0;
+    h+=`<div class="card"><h2>الحصة القادمة</h2><div class="row between"><div><b>${isToday?'اليوم':fmtD(ns.date)}</b><div class="muted small"><bdi dir="ltr">${SNAME[ns.type]}</bdi> · 35–45 دقيقة</div></div>
+    <button class="btn-p" data-act="startSession" data-t="${ns.type}">ابدأ الحصة</button></div>
+    ${S.active?'<p class="small" style="margin:8px 0 0;color:var(--warn)">لديك حصة جارية. اضغط تبويب «الحصة» لمتابعتها.</p>':''}</div>`;
+    h+=weekStrip();
+    h+=`<div class="card"><div class="row between"><h2>مؤشر الجاهزية</h2><button class="btn-s" data-act="nav" data-t="progress">التفاصيل</button></div>${readyBadge(rd)}</div>`;
+  }
+  h+=`<div class="card"><h2>آخر مراجعة أسبوعية</h2>${lastRev?`<p style="margin:0"><b>${fmtD(lastRev.date)}</b> · ${esc(lastRev.decisionLbl)}</p>${lastRev.notes?`<p class="small muted" style="margin:4px 0 0">${esc(lastRev.notes)}</p>`:''}`:'<p class="muted" style="margin:0">لا توجد مراجعة بعد. تُجرى من تبويب «التقدم».</p>'}</div>`;
+  return h;
+}
+function medList(items){return items.map(([k,l])=>`<label class="check"><input type="checkbox" data-act="toggleMed" data-k="${k}" ${S.medical[k]?'checked':''}><span>${esc(l)}${S.medical[k]?`<span class="tag ok">${fmtS(S.medical[k])}</span>`:''}</span></label>`).join('')}
+function readyBadge(rd){
+  const cls={urgent:'a-danger',hold:'a-warn',ready:'a-ok',final:'a-info',phase0:'a-info'}[rd.status];
+  return `<div class="alert ${cls}" style="margin:0"><b>${esc(rd.title)}</b>${rd.status==='hold'?'أكمل المعايير غير المحققة في بطاقة التقدم قبل التدرج.':rd.status==='ready'?'القرار لك: يمكنك تأكيد الانتقال من تبويب «التقدم».':''}</div>`;
+}
+function weekStrip(){
+  const ws=weekStart(today());const t=today();
+  const cells=SCHED_ORDER.map((dow,i)=>{
+    const d=addDays(ws,i),ty=SCHED[dow];const done=S.sessions.some(s=>s.date===d&&(ty==='R'?s.type==='R':s.type!=='R'));
+    return `<div class="kpi" style="${d===t?'outline:2px solid var(--primary)':''}"><div class="tiny muted">${DAYN[dow]}</div><b style="font-size:15px">${ty==='X'?'راحة':ty==='R'?'تعافٍ':ty}</b><div>${done?'✅':'&nbsp;'}</div></div>`;
+  }).join('');
+  return `<div class="card"><h2>هذا الأسبوع</h2><div style="display:grid;grid-template-columns:repeat(7,1fr);gap:4px">${cells}</div></div>`;
+}
+
+/* ---------- الحصة ---------- */
+function buildActive(type){
+  const items=(S.plan[S.phase]||{})[type]||[];
+  const exs=items.map(item=>{
+    const L=exDef(item.ex);const sides=item.perSide||L.perSide?['L','R']:[null];const perSide=!!sides[0]||false;
+    const rows=[];for(let s=1;s<=item.sets;s++)for(const sd of sides)rows.push({set:s,side:sd,reps:'',weight:'',done:false,dur:0});
+    return{ex:item.ex,ar:L.ar,en:L.en,unit:L.unit,sets:item.sets,reps:item.reps,repsMax:item.repsMax||null,perSide:sides[0]!==null,weighted:item.weighted??!!L.weighted,optional:!!item.optional,note:item.note||'',gate:L.gate||null,noRest:!!L.noRest,rows,status:'pending'};
+  });
+  return{id:uid(),date:today(),type,phase:S.phase,week:weekNo(),startedAt:Date.now(),exercises:exs,cur:0,rest:null,work:null};
+}
+function targetTxt(e){
+  const r=e.reps+(e.repsMax?'–'+e.repsMax:'');
+  if(e.unit==='min')return `${r} دقائق`;
+  if(e.unit==='breaths')return `${r} أنفاس`;
+  return `<bdi dir="ltr">${e.sets} × ${r}</bdi>${e.unit==='sec'?' ثانية':''}${e.perSide?' لكل جهة':''}`;
+}
+function vWorkout(){
+  const a=S.ui.fin?null:S.active;
+  if(S.ui.result)return vResult();
+  if(S.ui.fin)return vFinish();
+  if(!a){
+    if(S.phase===0)return `<div class="card"><h2>الحصص</h2><p>ابدأ المرحلة 1 من الرئيسية أولاً.</p><button class="btn-p" data-act="nav" data-t="home">إلى الرئيسية</button></div>`;
+    return `<div class="card"><h2>ابدأ حصة</h2><p class="muted small">المرحلة ${S.phase}: ${PHASES[S.phase].n}. الحصص الثلاث متشابهة في المرحلة 1 وتتنوّع بعدها.</p>
+    <div class="grid3">${['A','B','C'].map(t=>`<button class="btn-p" data-act="startSession" data-t="${t}">${SNAME[t]}</button>`).join('')}</div>
+    <button class="btn-block" style="margin-top:8px" data-act="startSession" data-t="R">تسجيل يوم تعافٍ / مشي خفيف</button></div>`;
+  }
+  const done=a.exercises.filter(e=>e.status==='done').length,tot=a.exercises.length;
+  let h=`<div class="card"><div class="row between"><div><b>${SNAME[a.type]}</b> <span class="tag">المرحلة ${a.phase}</span><div class="small muted">الزمن المنقضي <span id="elapsed">0:00</span> · ${done}/${tot} تمارين</div></div></div>
+  <div class="bar" style="margin-top:8px"><i style="width:${tot?done/tot*100:0}%"></i></div></div>
+  <div class="alert a-info small"><b>تذكير للركبة اليسرى</b>تجنّب قفل الركبة للخلف (Hyperextension) أثناء الوقوف والتمارين، وحافظ على انثناء طفيف. الشدة المستهدفة ${a.phase===1?'حوالي 5/10':'مريحة بلا ألم'}. عند ألم واضح أو تورم أو قفل أو عدم ثبات: أوقف وسجّل العرض.</div>`;
+  a.exercises.forEach((e,i)=>h+=exCard(e,i,a));
+  h+=`<button class="btn-p btn-block" data-act="finishOpen">إنهاء الحصة وتسجيل الأعراض</button>
+  <button class="btn-d btn-block" style="margin-top:8px" data-act="stopOpen">⛔ إيقاف التمرين بسبب عَرَض</button>
+  <button class="btn-block btn-s" style="margin-top:8px" data-act="discard">إلغاء الحصة دون حفظ</button>`;
+  return h;
+}
+function exCard(e,i,a){
+  const open=a.cur===i,L=exDef(e.ex);
+  const locked=e.gate&&!S.medical[e.gate];
+  const nm=`${esc(e.ar)}${S.settings.showEn?`<div class="tiny muted" dir="ltr" style="text-align:start">${esc(e.en)}</div>`:''}`;
+  const status=e.status==='done'?'<span class="tag ok">تم</span>':e.status==='skipped'?'<span class="tag warn">تم التخطي</span>':e.optional?'<span class="tag">اختياري</span>':'';
+  let h=`<div class="ex ${open?'cur':''} ${e.status==='done'?'done':''}"><div class="ex-h" data-act="exOpen" data-i="${i}"><div class="ex-n">${e.status==='done'?'✓':i+1}</div><div class="grow"><b>${nm}</b><div class="small muted">${targetTxt(e)}</div></div>${status}</div>`;
+  if(open){
+    h+=`<div class="ex-b">${figs(e.ex)}<p class="small" style="margin:0 0 6px">${esc(L.cue||'')}${e.note?` <b>${esc(e.note)}</b>`:''}</p>`;
+    if(L.knee)h+=`<p class="tiny" style="margin:0 0 6px;color:var(--warn)">لا تقفل الركبة اليسرى للخلف.</p>`;
+    if(locked){h+=`<div class="alert a-warn small"><b>مقفل</b>يُنفَّذ فقط إذا سمح تقييم الركبة. فعّل الخيار من «التقييم ← التقييم الأولي» بعد موافقة المختص، أو تخطَّ التمرين.</div><button class="btn-block" data-act="exSkip" data-i="${i}">تخطي التمرين</button></div></div>`;return h}
+    const item={ex:e.ex,sets:e.sets,reps:e.reps,repsMax:e.repsMax};
+    const sg=suggestion(L,item);const lp=lastPerfs(e.ex,1,a.id)[0];
+    if(lp)h+=`<div class="small muted" style="margin-bottom:4px">آخر مرة (${fmtS(lp.date)}): ${lp.rows.map(r=>`${esc(r.reps||'-')}${r.weight?'×'+esc(r.weight)+'كجم':''}`).join('، ')}</div>`;
+    if(sg)h+=`<div class="alert a-info small"><b>اقتراح تدرّج</b>${esc(sg)}</div>`;
+    e.rows.forEach((r,ri)=>{
+      const running=a.work&&a.work.ei===i&&a.work.ri===ri;
+      const side=r.side?(r.side==='L'?'اليسار':'اليمين'):'';
+      const busy=a.work&&!running;
+      const tgt=e.repsMax||e.reps;
+      h+=`<div class="setrow ${r.done?'done':''}"><div class="lbl"><b>مجموعة ${r.set}</b>${side?`<div class="tiny muted">${side}</div>`:''}</div>
+      ${e.weighted?`<input type="number" inputmode="decimal" step="0.5" min="0" placeholder="الوزن كجم" value="${esc(r.weight)}" data-bind="row" data-i="${i}" data-r="${ri}" data-f="weight" aria-label="الوزن">`:'<span></span>'}
+      ${e.unit==='min'?'<span></span>':`<input type="number" inputmode="numeric" min="0" placeholder="${e.unit==='sec'?'ثوانٍ':'تكرار'} (${tgt})" value="${esc(r.reps)}" data-bind="row" data-i="${i}" data-r="${ri}" data-f="reps" aria-label="التكرارات">`}
+      <div class="act">${r.done?`<span class="grow">✅ تم${r.dur?` · ${mmss(r.dur)}`:''}</span><button class="btn-s" data-act="rowUndo" data-i="${i}" data-r="${ri}">تعديل</button>`
+      :running?`<span class="timer-big" id="workT">0:00</span><button class="btn-p grow" data-act="rowFinish" data-i="${i}" data-r="${ri}">إنهاء المجموعة</button>`
+      :`<button class="btn-p grow" ${busy?'disabled':''} data-act="rowStart" data-i="${i}" data-r="${ri}">بدء المجموعة</button><button class="btn-s" ${busy?'disabled':''} data-act="rowQuick" data-i="${i}" data-r="${ri}" title="تسجيل سريع دون مؤقت">تسجيل سريع ✓</button>`}</div></div>`;
+    });
+    h+=`<div class="row" style="margin-top:8px"><label class="check grow" style="border:0;padding:0"><input type="checkbox" data-act="exToggle" data-i="${i}" ${e.status==='done'?'checked':''}><span>تم إكمال التمرين</span></label><button class="btn-s" data-act="exSkip" data-i="${i}">تخطي</button></div></div>`;
+  }
+  return h+'</div>';
+}
+/* منطق المجموعات */
+function curRow(ei,ri){const e=S.active.exercises[ei];return[e,e.rows[ri]]}
+function targetSecs(e){return e.unit==='min'?e.reps*60:e.unit==='sec'?e.reps:0}
+function rowStart(ei,ri){audio();const a=S.active,e=a.exercises[ei];a.work={ei,ri,startAt:Date.now(),target:targetSecs(e)};a.cur=ei;save();render()}
+function rowFinish(ei,ri,auto){
+  const a=S.active;if(!a)return;const[e,r]=curRow(ei,ri);
+  const el=a.work&&a.work.ei===ei&&a.work.ri===ri?Math.round((Date.now()-a.work.startAt)/1000):0;
+  r.dur=el;r.done=true;a.work=null;
+  if(e.unit==='min')r.reps=Math.max(1,Math.round(el/60))||e.reps;
+  else if(e.unit==='sec'){if(r.reps==='')r.reps=auto?e.reps:el}
+  else if(r.reps==='')r.reps=e.repsMax||e.reps;
+  afterRow(ei,ri,auto);
+}
+function rowQuick(ei,ri){const a=S.active,[e,r]=curRow(ei,ri);a.work=null;r.done=true;if(r.reps==='')r.reps=e.unit==='min'?e.reps:(e.repsMax||e.reps);afterRow(ei,ri,false,true)}
+function afterRow(ei,ri,auto,quick){
+  const a=S.active,e=a.exercises[ei],r=e.rows[ri];
+  if(e.rows.every(x=>x.done)){e.status='done';warnBoth(e);const n=a.exercises.findIndex(x=>x.status==='pending');a.cur=n>=0?n:ei}
+  const hasMore=a.exercises.some(x=>x.status==='pending'&&x.rows.some(y=>!y.done))||e.rows.some(x=>!x.done);
+  const switching=e.perSide&&r.side==='L';
+  if(!quick&&hasMore&&!switching&&!e.noRest)startRest();
+  if(auto)beep();
+  save();render();
+}
+function warnBoth(e){
+  const a=S.active;const p=lastPerfs(e.ex,1,a.id)[0];if(!p||!e.weighted)return;
+  const w=avg(e.rows.map(r=>num(r.weight)).filter(x=>x!=null)),rp=avg(e.rows.map(r=>num(r.reps)||0));
+  if(w!=null&&p.avgW!=null&&w>p.avgW+1e-9&&rp>p.avgR+1e-9)toast('زدت الوزن والتكرارات معاً مقارنة بآخر مرة. الأفضل زيادة متغيّر واحد فقط في كل مرة.');
+}
+function startRest(){const a=S.active;const s=S.settings.rest;a.rest={endAt:Date.now()+s*1000,total:s};renderRest()}
+function renderRest(){
+  const a=S.active,b=$('#restbar');
+  if(!a||!a.rest||!S.onboarded){b.style.display='none';return}
+  b.style.display='block';updateRest();
+}
+function updateRest(){
+  const a=S.active,b=$('#restbar');if(!a||!a.rest)return;
+  const left=Math.ceil((a.rest.endAt-Date.now())/1000);
+  if(left<=0){if(!a.rest.ended){a.rest.ended=true;a.rest.endedAt=Date.now();beep();b.classList.add('end');$('#restTime').textContent='انتهت الراحة';save()}
+    if(Date.now()-a.rest.endedAt>8000){a.rest=null;b.classList.remove('end');b.style.display='none';save()}return}
+  b.classList.remove('end');$('#restTime').textContent=mmss(left);
+}
+setInterval(()=>{
+  const a=S.active;if(!a||!S.onboarded)return;
+  const el=$('#elapsed');if(el)el.textContent=mmss((Date.now()-a.startedAt)/1000);
+  updateRest();
+  if(a.work){
+    const w=a.work,sec=Math.floor((Date.now()-w.startAt)/1000),t=$('#workT');
+    if(w.target){const left=w.target-sec;if(t)t.textContent=mmss(left);if(left<=0){rowFinish(w.ei,w.ri,true);return}}
+    else if(t)t.textContent=mmss(sec);
+  }
+},250);
+
+/* إنهاء الحصة والأعراض */
+function openFin(stopped){
+  const a=S.active;S.ui.fin={stopped:!!stopped,rpe:5,pain:0,control:4,symptoms:[],notes:'',duration:a.type==='R'?30:Math.max(1,Math.round((Date.now()-a.startedAt)/60000))};save();render();window.scrollTo(0,0);
+}
+function vFinish(){
+  const f=S.ui.fin,a=S.active;
+  const sy=(list)=>list.map(([k,l])=>`<label class="check"><input type="checkbox" data-bind="sym" data-k="${k}" ${f.symptoms.includes(k)?'checked':''}><span>${esc(l)}</span></label>`).join('');
+  return `<div class="card"><h2>${f.stopped?'إيقاف الحصة بسبب عَرَض':'إنهاء الحصة'}</h2>
+  ${f.stopped?'<div class="alert a-warn small"><b>تم إيقاف التمرين</b>سجّل العرض بدقة. لا تكمل التمارين اليوم.</div>':''}
+  <label class="f">المدة (دقائق)</label><input type="number" inputmode="numeric" value="${f.duration}" data-bind="fin" data-f="duration">
+  ${a.type==='R'?'':`<label class="f">شدة الجهد RPE: <b id="rpeV">${f.rpe}</b>/10 ${a.phase===1?'(المستهدف حوالي 5)':''}</label><input type="range" min="1" max="10" value="${f.rpe}" data-bind="fin" data-f="rpe">
+  <label class="f">جودة التحكم في الحركة (خاصة الركبة اليسرى): <b id="ctlV">${f.control}</b>/5</label><input type="range" min="1" max="5" value="${f.control}" data-bind="fin" data-f="control">`}
+  <label class="f">الألم العام بعد الحصة: <b id="painV">${f.pain}</b>/10</label><input type="range" min="0" max="10" value="${f.pain}" data-bind="fin" data-f="pain">
+  <h3>أعراض الركبة <span class="tiny muted">(تستدعي الإيقاف)</span></h3>${sy(SYMP.knee)}
+  <h3>أعراض أخرى</h3>${sy(SYMP.other)}
+  <h3 style="color:var(--danger)">علامات خطر (تقييم طبي عاجل)</h3>${sy(SYMP.red)}
+  <label class="f">ملاحظات</label><textarea data-bind="fin" data-f="notes" placeholder="أي ملاحظة عن الألم أو التحكم أو التوازن…">${esc(f.notes)}</textarea>
+  <div class="grid2" style="margin-top:12px"><button class="btn-p" data-act="finishSave">حفظ الحصة</button><button data-act="finCancel">رجوع</button></div></div>`;
+}
+function finishSave(){
+  const a=S.active,f=S.ui.fin;
+  const sess={id:a.id,date:a.date,type:a.type,phase:a.phase,week:a.week,startedAt:a.startedAt,durationMin:num(f.duration)||0,stopped:f.stopped,rpe:a.type==='R'?null:+f.rpe,control:a.type==='R'?null:+f.control,pain:+f.pain,symptoms:f.symptoms.slice(),notes:f.notes,
+    exercises:a.exercises.map(e=>({ex:e.ex,ar:e.ar,en:e.en,unit:e.unit,status:e.status,perSide:e.perSide,weighted:e.weighted,sets:e.sets,reps:e.reps,repsMax:e.repsMax,rows:e.rows.map(r=>({set:r.set,side:r.side,reps:r.reps,weight:r.weight,done:r.done,dur:r.dur}))}))};
+  S.sessions.push(sess);S.active=null;S.ui.fin=null;S.ui.result=sess.id;try{wake&&wake.release()}catch(e){}
+  save();render();window.scrollTo(0,0);
+}
+function vResult(){
+  const s=S.sessions.find(x=>x.id===S.ui.result);if(!s){S.ui.result=null;return vWorkout()}
+  const r=assessSession(s);
+  const cls={ok:'a-ok',caution:'a-warn',stop:'a-danger',urgent:'a-danger'}[r.level];
+  const done=s.exercises.filter(e=>e.status==='done').length;
+  return `<div class="card"><h2>تم حفظ الحصة ✅</h2><p class="muted small">${done}/${s.exercises.length} تمارين · ${s.durationMin} دقيقة${s.rpe?` · RPE ${s.rpe}`:''} · الألم ${s.pain}/10</p>
+  ${r.level==='ok'?'<div class="alert a-ok"><b>لا أعراض مقلقة مسجّلة</b>أحسنت. استمر بتحكم وراحة كافية.</div>':`<div class="alert ${cls}"><b>${r.level==='urgent'?'تقييم طبي عاجل':r.level==='stop'?'أوقف وسجّل العرض':'انتبه'}</b><ul>${r.msgs.map(m=>`<li>${esc(m)}</li>`).join('')}</ul></div>`}
+  <button class="btn-p btn-block" data-act="resultOk">تم</button></div>`;
+}
+
+/* ---------- التقدم ---------- */
+function sessionsInWeek(ws){return S.sessions.filter(s=>weekStart(s.date)===ws)}
+function weekStats(ws){
+  const ss=sessionsInWeek(ws),st=ss.filter(s=>s.type!=='R'&&!s.stopped);
+  let vol=0,sets=0;st.forEach(s=>s.exercises.forEach(e=>e.rows.forEach(r=>{if(r.done){sets++;const w=num(r.weight),rp=num(r.reps);if(w&&rp)vol+=w*rp}})));
+  const pains=ss.map(s=>s.pain||0),rpes=ss.filter(s=>s.rpe).map(s=>s.rpe);
+  return{ss,strength:st.length,recovery:ss.filter(s=>s.type==='R').length,sets,vol,pain:ss.length?avg(pains):null,painMax:ss.length?Math.max(...pains):null,rpe:avg(rpes),stopped:ss.filter(s=>s.stopped).length};
+}
+function cmp(cur,prev,lowerBetter,unit=''){
+  if(cur==null||prev==null)return '<span class="muted">—</span>';const d=cur-prev;if(Math.abs(d)<.05)return '<span class="muted">=</span>';
+  const good=lowerBetter?d<0:d>0;return `<span class="${good?'up':'down'}">${d>0?'▲':'▼'} ${r1(Math.abs(d))}${unit}</span>`;
+}
+function vProgress(){
+  const off=S.ui.weekOffset||0,ws=addDays(weekStart(today()),off*7),pw=addDays(ws,-7);
+  const cur=weekStats(ws),prev=weekStats(pw),rd=readiness();
+  let h=`<div class="card"><h2>الجاهزية للتدرج</h2>${readinessBody(rd)}</div>`;
+  h+=`<div class="card"><div class="row between"><button class="btn-s" data-act="weekNav" data-d="-1">‹ السابق</button><b>أسبوع ${fmtS(ws)} – ${fmtS(addDays(ws,6))}</b><button class="btn-s" data-act="weekNav" data-d="1" ${off>=0?'disabled':''}>التالي ›</button></div>
+  <div class="grid3" style="margin-top:10px"><div class="kpi"><b>${cur.strength}/3</b><span class="small muted">حصص القوة</span></div><div class="kpi"><b>${cur.sets}</b><span class="small muted">مجموعات</span></div><div class="kpi"><b>${r1(cur.pain)}</b><span class="small muted">متوسط الألم</span></div></div>
+  <h3>مقارنة بالأسبوع السابق</h3><table class="t"><tr><th></th><th>هذا الأسبوع</th><th>السابق</th><th>التغيّر</th></tr>
+  <tr><td>حصص القوة</td><td>${cur.strength}</td><td>${prev.strength}</td><td>${cmp(cur.strength,prev.strength,false)}</td></tr>
+  <tr><td>المجموعات المنفذة</td><td>${cur.sets}</td><td>${prev.sets}</td><td>${cmp(cur.sets,prev.sets,false)}</td></tr>
+  <tr><td>حجم الأوزان (كجم)</td><td>${Math.round(cur.vol)}</td><td>${Math.round(prev.vol)}</td><td>${cmp(cur.vol,prev.vol,false)}</td></tr>
+  <tr><td>متوسط الألم</td><td>${r1(cur.pain)}</td><td>${r1(prev.pain)}</td><td>${cmp(cur.pain,prev.pain,true)}</td></tr>
+  <tr><td>متوسط RPE</td><td>${r1(cur.rpe)}</td><td>${r1(prev.rpe)}</td><td>${cmp(cur.rpe,prev.rpe,true)}</td></tr></table>
+  ${cur.ss.length?'<h3>التمارين والأعراض والملاحظات</h3>'+cur.ss.map(sessDetail).join(''):'<p class="muted small">لا حصص مسجّلة في هذا الأسبوع.</p>'}</div>`;
+  h+=chartsCard();
+  return h;
+}
+function sessDetail(s){
+  const sy=(s.symptoms||[]).map(k=>`<span class="tag ${REDK.includes(k)||STOPK.includes(k)?'bad':'warn'}">${esc(SYMP_LBL[k])}</span>`).join('');
+  return `<details><summary>${fmtD(s.date)} · ${SNAME[s.type]}${s.stopped?' <span class="tag bad">أُوقفت</span>':''} · ألم ${s.pain}/10</summary>
+  ${s.exercises.filter(e=>e.status!=='skipped').map(e=>`<div class="stat"><span>${esc(e.ar)}</span><span dir="ltr">${e.rows.filter(r=>r.done).map(r=>`${r.reps||'-'}${r.weight?'@'+r.weight:''}`).join(' · ')||'—'}</span></div>`).join('')}
+  <div style="margin-top:6px">${sy}</div>${s.notes?`<p class="small muted">📝 ${esc(s.notes)}</p>`:''}</details>`;
+}
+function readinessBody(rd){
+  let h=readyBadge(rd);
+  if(rd.status==='phase0')return h+'<p class="small muted">ابدأ المرحلة 1 من الرئيسية.</p>';
+  if(rd.status==='urgent')h+=`<div class="alert a-danger small">سُجّلت علامة خطر في آخر الحصص. لا تتدرّج، واطلب تقييماً طبياً عاجلاً.</div>`;
+  h+=rd.crit.map(c=>`<div class="check"><span>${c.ok?'✅':'⬜'}</span><span><b class="small">${esc(c.label)}</b><div class="tiny muted">${esc(c.detail)}</div></span></div>`).join('');
+  h+=`<label class="f">ملاحظات المراجعة الأسبوعية (اختياري)</label><textarea id="revNotes" placeholder="كيف شعرت هذا الأسبوع؟"></textarea>`;
+  if(S.phase<4)h+=`<div class="grid2" style="margin-top:10px"><button class="btn-p" data-act="reviewHold">تثبيت المرحلة وحفظ المراجعة</button><button data-act="reviewAdvance" ${rd.status==='ready'?'':'disabled'}>تأكيد الانتقال للمرحلة ${S.phase+1}</button></div><p class="tiny muted">لا يتم الانتقال تلقائياً أبداً: يلزم تحقق كل المعايير وتأكيدك بنفسك.</p>`;
+  else h+=`<button class="btn-p btn-block" style="margin-top:10px" data-act="reviewHold">حفظ المراجعة الأسبوعية</button><div class="alert a-warn small" style="margin-top:10px"><b>الجري والقفز وتغيير الاتجاه</b>لا تُدخلها قبل تقييم الاستعداد لها مع مختص. هذا التطبيق لا يتضمنها.</div>`;
+  if(S.phase>=2)h+=`<button class="btn-block btn-s" style="margin-top:8px" data-act="stepBack">العودة للمرحلة ${S.phase-1} (عند عودة الأعراض أو الحاجة للتثبيت)</button>`;
+  return h;
+}
+function chartsCard(){
+  const strength=strengthSessions().slice(-12);
+  const lab=strength.map(s=>fmtS(s.date));
+  let h=`<div class="card"><h2>الألم والجهد عبر الحصص</h2>${lineChart([{name:'الألم',data:strength.map(s=>s.pain??null)},{name:'RPE',data:strength.map(s=>s.rpe??null)}],lab,{min:0,max:10})}</div>`;
+  const wk=[];const base=weekStart(today());for(let i=7;i>=0;i--)wk.push(addDays(base,-7*i));
+  h+=`<div class="card"><h2>الحصص المكتملة أسبوعياً</h2>${barChart(wk.map(w=>weekStats(w).strength),wk.map(fmtS),3)}<div class="tiny muted">الخط المتقطع = الهدف (3 حصص)</div></div>`;
+  const exs=new Map();S.sessions.forEach(s=>s.exercises.forEach(e=>{if(e.rows.some(r=>r.done))exs.set(e.ex,e.ar)}));
+  const sel=S.ui.chartEx&&exs.has(S.ui.chartEx)?S.ui.chartEx:[...exs.keys()][0]||'';
+  const met=S.ui.chartMetric;
+  let ch='<p class="muted small">سجّل حصصاً لعرض تطور التمارين.</p>';
+  if(sel){
+    const pts=[];S.sessions.forEach(s=>{const p=perfOf(s,sel);if(p)pts.push({d:fmtS(s.date),w:p.avgW,r:p.avgR,v:p.rows.reduce((t,r)=>t+(num(r.weight)||0)*(num(r.reps)||0),0)})});
+    const key={weight:['الوزن (كجم)','w'],reps:['التكرارات','r'],vol:['الحجم (كجم×تكرار)','v']}[met];
+    ch=lineChart([{name:key[0],data:pts.map(p=>p[key[1]])}],pts.map(p=>p.d));
+  }
+  h+=`<div class="card"><h2>تطور تمرين</h2><select data-bind="chartEx">${[...exs].map(([k,v])=>`<option value="${k}" ${k===sel?'selected':''}>${esc(v)}</option>`).join('')}</select>
+  <div class="seg" style="margin-top:8px">${[['weight','الوزن'],['reps','التكرارات'],['vol','الحجم']].map(([k,l])=>`<button class="${met===k?'on':''}" data-act="metric" data-m="${k}">${l}</button>`).join('')}</div>${ch}</div>`;
+  return h;
+}
+function saveReview(decision,lbl){
+  const n=$('#revNotes');S.reviews.push({id:uid(),date:today(),weekStart:weekStart(today()),phase:S.phase,week:weekNo(),decision,decisionLbl:lbl,notes:n?n.value:'',criteria:readiness().crit.map(c=>({l:c.label,ok:c.ok}))});
+}
+
+/* ---------- التقييم ---------- */
+const ASSESS=[
+ ['ktw','Knee-to-Wall','المسافة بين إصبع القدم والجدار (سم) أثناء لمس الجدار بالركبة والكعب على الأرض',true],
+ ['slb','Single-Leg Balance','مدة الثبات على رجل واحدة (ثانية)، بدعم قريب للسلامة',true]
+];
+function vAssess(){
+  let h=`<div class="alert a-info small"><b>ملاحظة</b>هذه الاختبارات لمتابعة تطورك فقط. ليست تشخيصاً طبياً ولا دليلاً منفرداً على وجود انحراف أو خلل في الحوض أو العصعص أو المفصل العجزي الحرقفي.</div>`;
+  h+=`<div class="card"><h2>التقييم الأولي (Phase 0)</h2>${medList(MED)}</div>`;
+  const f=S.ui.af||{};
+  const inp=(k,l,ph='')=>`<div><label class="f">${l}</label><input type="number" inputmode="decimal" step="0.1" data-bind="af" data-f="${k}" value="${esc(f[k]??'')}" placeholder="${ph}"></div>`;
+  const txt=(k,l)=>`<label class="f">${l}</label><textarea data-bind="af" data-f="${k}" style="min-height:56px">${esc(f[k]||'')}</textarea>`;
+  h+=`<div class="card"><h2>تسجيل اختبار متابعة</h2><label class="f">التاريخ</label><input type="date" data-bind="af" data-f="date" value="${f.date||today()}">
+  <h3>Knee-to-Wall (سم)</h3><div class="grid2">${inp('ktwL','اليسرى')}${inp('ktwR','اليمنى')}</div>
+  <h3>Single-Leg Balance (ثانية)</h3><div class="grid2">${inp('slbL','اليسرى')}${inp('slbR','اليمنى')}</div>
+  <h3>Active Straight Leg Raise</h3>${txt('aslrL','ملاحظات – اليسرى')}${txt('aslrR','ملاحظات – اليمنى')}
+  <h3>Hamstring Mobility</h3><div class="grid2">${inp('hamL','القياس – اليسرى')}${inp('hamR','القياس – اليمنى')}</div>${txt('hamN','ملاحظات')}
+  <h3>Standing Weight Distribution</h3>${txt('wd','ملاحظات (أين تشعر بالحمل؟ أي جهة أثقل؟)')}
+  <h3>Single-Leg Mini Squat <span class="tiny muted">(فقط عند إجرائه بأمان)</span></h3>${txt('mini','ملاحظات')}
+  <button class="btn-p btn-block" style="margin-top:12px" data-act="saveAssess">حفظ الاختبار</button>
+  <details style="margin-top:8px"><summary>كيف أجري كل اختبار؟</summary><div class="small muted">
+  <p><b>Knee-to-Wall:</b> قف أمام الجدار، الكعب على الأرض، وحاول لمس الجدار بالركبة. قِس المسافة من إصبع القدم للجدار لأبعد وضع تلمس فيه.</p>
+  <p><b>Single-Leg Balance:</b> قف قرب جدار أو كرسي للسلامة، وارفع رجلاً واحدة. سجّل مدة الثبات بتحكم لكل رجل مع بقاء الركبة غير مقفولة.</p>
+  <p><b>ASLR:</b> مستلقياً، ارفع رجلاً مستقيمة مع ثبات الحوض. دوّن مدى السهولة والملاحظات لكل جهة.</p>
+  <p><b>Hamstring Mobility:</b> سجّل القياس أو الإحساس عند الشد بلا ألم.</p>
+  <p><b>Mini Squat:</b> بمدى صغير جداً وبدعم، وفقط إذا كان آمناً ودون ألم.</p></div></details></div>`;
+  const A=S.assessments;
+  if(A.length){
+    const lab=A.map(a=>fmtS(a.date));
+    h+=`<div class="card"><h2>Knee-to-Wall</h2>${lineChart([{name:'اليسرى',data:A.map(a=>num(a.ktwL))},{name:'اليمنى',data:A.map(a=>num(a.ktwR))}],lab)}</div>
+    <div class="card"><h2>Single-Leg Balance</h2>${lineChart([{name:'اليسرى',data:A.map(a=>num(a.slbL))},{name:'اليمنى',data:A.map(a=>num(a.slbR))}],lab)}</div>
+    <div class="card"><h2>سجل الاختبارات</h2>${A.slice().reverse().map(a=>`<details><summary>${fmtD(a.date)}</summary>
+    <table class="t"><tr><th></th><th>يسار</th><th>يمين</th></tr><tr><td>Knee-to-Wall</td><td>${esc(a.ktwL||'—')}</td><td>${esc(a.ktwR||'—')}</td></tr><tr><td>Balance</td><td>${esc(a.slbL||'—')}</td><td>${esc(a.slbR||'—')}</td></tr><tr><td>Hamstring</td><td>${esc(a.hamL||'—')}</td><td>${esc(a.hamR||'—')}</td></tr></table>
+    ${[['aslrL','ASLR يسار'],['aslrR','ASLR يمين'],['hamN','Hamstring'],['wd','توزيع الوزن'],['mini','Mini Squat']].filter(([k])=>a[k]).map(([k,l])=>`<p class="small"><b>${l}:</b> ${esc(a[k])}</p>`).join('')}
+    <button class="btn-s" data-act="delAssess" data-id="${a.id}">حذف</button></details>`).join('')}</div>`;
+  }
+  return h;
+}
+
+/* ---------- المزيد ---------- */
+function vMore(){
+  const m=S.ui.more;
+  const back=`<button class="btn-s" data-act="more" data-m="" style="margin-bottom:10px">› رجوع</button>`;
+  if(m==='history')return back+vHistory();
+  if(m==='plan')return back+vPlan();
+  if(m==='export')return back+vExport();
+  if(m==='settings')return back+vSettings();
+  if(m==='safety')return back+vSafety();
+  const it=(k,l,d)=>`<button class="btn-block" style="text-align:start;margin-bottom:8px" data-act="more" data-m="${k}"><b>${l}</b><div class="small muted">${d}</div></button>`;
+  return it('history','سجل التدريبات','كل الحصص السابقة وتفاصيلها')+it('plan','البرنامج وتعديل التمارين','عدّل المجموعات والتكرارات والتمارين لكل مرحلة وحصة')+it('export','تصدير ونسخ احتياطي','CSV وPDF ونسخة JSON كاملة')+it('settings','الإعدادات','لغة الأسماء، الراحة، الصوت، إدارة المرحلة')+it('safety','السلامة والتنبيهات','قواعد الأمان وعلامات الخطر');
+}
+function vHistory(){
+  const ss=S.sessions.slice().reverse();
+  if(!ss.length)return '<div class="card"><p class="muted">لا توجد حصص مسجّلة بعد.</p></div>';
+  return `<div class="card"><h2>سجل التدريبات (${ss.length})</h2>${ss.map(s=>`<div style="border-bottom:1px solid var(--line);padding:4px 0">${sessDetail(s)}<div class="tiny muted">المرحلة ${s.phase} · أسبوع ${s.week} · ${s.durationMin} د ${s.rpe?'· RPE '+s.rpe:''}</div><button class="btn-s" data-act="delSession" data-id="${s.id}">حذف</button></div>`).join('')}</div>`;
+}
+function vSettings(){
+  const st=S.settings;
+  return `<div class="card"><h2>الإعدادات</h2>
+  <label class="check"><input type="checkbox" data-bind="set" data-f="showEn" ${st.showEn?'checked':''}><span>عرض أسماء التمارين بالإنجليزية</span></label>
+  <label class="check"><input type="checkbox" data-bind="set" data-f="sound" ${st.sound?'checked':''}><span>صوت عند انتهاء الراحة</span></label>
+  <label class="check"><input type="checkbox" data-bind="set" data-f="vibrate" ${st.vibrate?'checked':''}><span>اهتزاز عند انتهاء الراحة</span></label>
+  <label class="f">مدة الراحة بين المجموعات: <b id="restV">${st.rest}</b> ثانية (المقترح 60–90)</label><input type="range" min="30" max="180" step="5" value="${st.rest}" data-bind="set" data-f="rest">
+  <label class="f">تاريخ بدء البرنامج</label><input type="date" data-bind="progStart" value="${S.programStart||''}" ${S.programStart?'':'disabled'}>
+  </div>
+  <div class="card"><h2>المرحلة الحالية: ${S.phase}</h2><p class="small muted">الانتقال للأعلى يتم من تبويب «التقدم» بعد تحقق الجاهزية. هنا يمكنك العودة فقط عند الحاجة.</p>
+  <button class="btn-block" data-act="stepBack" ${S.phase>=2?'':'disabled'}>العودة للمرحلة السابقة</button></div>
+  <div class="card"><h2>إعادة ضبط</h2><button class="btn-d btn-block" data-act="wipe">حذف كل البيانات</button></div>`;
+}
+function vSafety(){
+  return `<div class="card"><h2>قواعد الأمان في التطبيق</h2><ul class="small" style="padding-inline-start:20px">
+  <li>التطبيق لا يشخّص وضعية الحوض أو العصعص أو المفصل العجزي الحرقفي.</li>
+  <li>لا انتقال لمرحلة أعلى بمرور الأسابيع؛ فقط عند تحقق الجاهزية وتأكيدك.</li>
+  <li>لا زيادة تلقائية للوزن والتكرارات معاً؛ الاقتراحات تغيّر متغيراً واحداً.</li>
+  <li>تجنّب قفل الركبة اليسرى للخلف في كل التمارين.</li>
+  <li>لا أوزان ثقيلة ولا سكوات عميق ولا اندفاعات عميقة في البداية.</li>
+  <li>لا تمارين كيجل مكثفة دون تقييم مختص، ولا إيقاف تدفق البول كتمرين.</li>
+  <li>لا تعديل ذاتي يدوي للعصعص.</li>
+  <li>عند ألم واضح أو تورم أو قفل أو عدم ثبات: أوقف التمرين وسجّل العرض.</li></ul></div>`+urologyCard();
+}
+function vPlan(){
+  const ph=S.ui.planPhase,se=S.ui.planSess;const list=S.plan[ph][se];
+  let h=`<div class="seg">${[1,2,3,4].map(p=>`<button class="${ph===p?'on':''}" data-act="planPh" data-p="${p}">م${p}</button>`).join('')}</div>
+  <div class="seg">${['A','B','C'].map(x=>`<button class="${se===x?'on':''}" data-act="planSe" data-s="${x}">${SNAME[x]}</button>`).join('')}</div>
+  <p class="small muted">التعديلات تُطبَّق على الحصص الجديدة. ${ph>S.phase?'هذه مرحلة لم تصلها بعد.':''}</p>`;
+  h+=list.map((p,i)=>{const L=exDef(p.ex);
+    return `<div class="card"><div class="row between"><b>${esc(L.ar)}</b><span class="tiny muted" dir="ltr">${esc(L.en)}</span></div>
+    <div class="grid3"><div><label class="f">المجموعات</label><input type="number" min="1" max="10" value="${p.sets}" data-bind="plan" data-i="${i}" data-f="sets"></div>
+    <div><label class="f">${L.unit==='sec'?'ثوانٍ':L.unit==='min'?'دقائق':'تكرارات'}</label><input type="number" min="1" value="${p.reps}" data-bind="plan" data-i="${i}" data-f="reps"></div>
+    <div><label class="f">حتى (اختياري)</label><input type="number" min="1" value="${p.repsMax||''}" data-bind="plan" data-i="${i}" data-f="repsMax"></div></div>
+    <div class="row wrapf" style="margin-top:6px"><label class="check" style="border:0;padding:4px 0"><input type="checkbox" data-bind="plan" data-i="${i}" data-f="optional" ${p.optional?'checked':''}><span>اختياري</span></label>
+    <label class="check" style="border:0;padding:4px 0"><input type="checkbox" data-bind="plan" data-i="${i}" data-f="perSide" ${p.perSide??L.perSide?'checked':''}><span>لكل جهة</span></label>
+    ${L.unit==='reps'||L.unit==='sec'?`<label class="check" style="border:0;padding:4px 0"><input type="checkbox" data-bind="plan" data-i="${i}" data-f="weighted" ${p.weighted??L.weighted?'checked':''}><span>تسجيل وزن</span></label>`:''}</div>
+    <div class="row"><button class="btn-s" data-act="planMove" data-i="${i}" data-d="-1" ${i===0?'disabled':''}>▲</button><button class="btn-s" data-act="planMove" data-i="${i}" data-d="1" ${i===list.length-1?'disabled':''}>▼</button><button class="btn-s" data-act="planDel" data-i="${i}">حذف</button></div></div>`}).join('');
+  const all={...LIB};S.customEx.forEach(c=>all[c.id]=c);
+  h+=`<div class="card"><h2>إضافة تمرين</h2><select id="addEx">${Object.entries(all).map(([k,v])=>`<option value="${k}">${esc(v.ar)} – ${esc(v.en)}</option>`).join('')}</select>
+  <button class="btn-p btn-block" style="margin-top:8px" data-act="planAdd">إضافة من المكتبة</button>
+  <h3>تمرين مخصص</h3><div class="grid2"><input type="text" id="cuAr" placeholder="الاسم بالعربية"><input type="text" id="cuEn" placeholder="English name" dir="ltr"></div>
+  <select id="cuUn" style="margin-top:8px"><option value="reps">تكرارات</option><option value="sec">ثوانٍ</option></select>
+  <button class="btn-block" style="margin-top:8px" data-act="planCustom">إضافة تمرين مخصص</button></div>
+  <button class="btn-block" data-act="planReset">استعادة الافتراضي لهذه المرحلة</button>`;
+  return h;
+}
+
+/* ---------- التصدير ---------- */
+function vExport(){
+  return `<div class="card"><h2>تصدير السجل</h2>
+  <button class="btn-p btn-block" data-act="csvSessions">تصدير سجل الحصص CSV</button>
+  <button class="btn-block" style="margin-top:8px" data-act="csvAssess">تصدير الاختبارات CSV</button>
+  <button class="btn-block" style="margin-top:8px" data-act="pdf">تقرير PDF (طباعة ← حفظ كـ PDF)</button></div>
+  <div class="card"><h2>نسخة احتياطية كاملة</h2><p class="small muted">بياناتك محفوظة في هذا المتصفح فقط. احتفظ بنسخة احتياطية قبل تغيير الجهاز أو مسح بيانات المتصفح.</p>
+  <button class="btn-block" data-act="backup">تنزيل نسخة JSON</button>
+  <label class="f">استعادة من ملف</label><input type="file" accept="application/json" id="restoreF"></div>`;
+}
+function dl(name,mime,text){
+  const b=new Blob([text],{type:mime});const u=URL.createObjectURL(b);const a=document.createElement('a');a.href=u;a.download=name;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(u),4000);
+}
+const csvCell=v=>{v=String(v??'');return /[",\n\r]/.test(v)?'"'+v.replace(/"/g,'""')+'"':v};
+function csvSessions(){
+  const H=['التاريخ','المرحلة','الأسبوع','الحصة','التمرين','Exercise','المجموعة','الجانب','التكرارات/الثواني','الوزن كجم','حالة التمرين','RPE','الألم','التحكم','الأعراض','ملاحظات'];
+  const rows=[H];
+  S.sessions.forEach(s=>{
+    const common=[s.rpe??'',s.pain??'',s.control??'',(s.symptoms||[]).map(k=>SYMP_LBL[k]).join(' | '),s.notes||''];
+    if(!s.exercises.length||s.type==='R'){rows.push([s.date,s.phase,s.week,SNAME[s.type],'','','','','','','',...common]);return}
+    s.exercises.forEach(e=>{
+      if(!e.rows.length)return;
+      e.rows.forEach(r=>rows.push([s.date,s.phase,s.week,SNAME[s.type]+(s.stopped?' (أُوقفت)':''),e.ar,e.en,r.set,r.side==='L'?'يسار':r.side==='R'?'يمين':'',r.reps,r.weight,r.done?'منجز':e.status==='skipped'?'متخطى':'غير منجز',...common]));
+    });
+  });
+  dl(`training-log-${today()}.csv`,'text/csv;charset=utf-8','﻿'+rows.map(r=>r.map(csvCell).join(',')).join('\r\n'));
+}
+function csvAssess(){
+  const H=['التاريخ','KneeToWall يسار','KneeToWall يمين','Balance يسار (ث)','Balance يمين (ث)','ASLR يسار','ASLR يمين','Hamstring يسار','Hamstring يمين','Hamstring ملاحظات','توزيع الوزن','Mini Squat'];
+  const rows=[H,...S.assessments.map(a=>[a.date,a.ktwL,a.ktwR,a.slbL,a.slbR,a.aslrL,a.aslrR,a.hamL,a.hamR,a.hamN,a.wd,a.mini])];
+  dl(`assessments-${today()}.csv`,'text/csv;charset=utf-8','﻿'+rows.map(r=>r.map(csvCell).join(',')).join('\r\n'));
+}
+function pdfReport(){
+  const p=$('#print');
+  const rows=S.sessions.map(s=>`<tr><td>${s.date}</td><td>${SNAME[s.type]}${s.stopped?' (أُوقفت)':''}</td><td>م${s.phase}/أ${s.week}</td><td>${s.durationMin}</td><td>${s.rpe??'-'}</td><td>${s.pain}</td><td>${esc((s.symptoms||[]).map(k=>SYMP_LBL[k]).join('، '))}</td><td>${s.exercises.filter(e=>e.status==='done').map(e=>esc(e.ar)+': '+e.rows.filter(r=>r.done).map(r=>(r.reps||'-')+(r.weight?'@'+r.weight:'')).join('/')).join(' ؛ ')}</td><td>${esc(s.notes||'')}</td></tr>`).join('');
+  const ar=S.assessments.map(a=>`<tr><td>${a.date}</td><td>${esc(a.ktwL||'-')} / ${esc(a.ktwR||'-')}</td><td>${esc(a.slbL||'-')} / ${esc(a.slbR||'-')}</td><td>${esc(a.hamL||'-')} / ${esc(a.hamR||'-')}</td><td>${esc([a.aslrL,a.aslrR,a.wd,a.mini].filter(Boolean).join(' | '))}</td></tr>`).join('');
+  p.innerHTML=`<h1>تقرير التدريب والتأهيل</h1><p>تاريخ التقرير: ${today()} · المرحلة الحالية: ${S.phase} · حصص القوة المكتملة: ${completedStrength().length}/36</p>
+  <p>هذا التقرير سجل شخصي للمتابعة وليس تشخيصاً طبياً.</p>
+  <h2>الحصص</h2><table><tr><th>التاريخ</th><th>الحصة</th><th>المرحلة/الأسبوع</th><th>دقائق</th><th>RPE</th><th>ألم</th><th>أعراض</th><th>التمارين (تكرارات@وزن)</th><th>ملاحظات</th></tr>${rows}</table>
+  <h2>اختبارات المتابعة (يسار / يمين)</h2><table><tr><th>التاريخ</th><th>Knee-to-Wall</th><th>Balance (ث)</th><th>Hamstring</th><th>ملاحظات</th></tr>${ar}</table>`;
+  setTimeout(()=>window.print(),100);
+}
+
+/* =====================================================================
+   11) الأحداث
+   ===================================================================== */
+const A={
+ nav:el=>{S.ui.tab=el.dataset.t;S.ui.more=null;render();window.scrollTo(0,0)},
+ onboard:()=>{if(!$('#agree').checked){toast('يلزم تأكيد قراءة التنبيهات أولاً.');return}S.onboarded=true;save();render()},
+ toggleMed:el=>{const k=el.dataset.k;S.medical[k]=el.checked?today():null;save();render()},
+ startPhase1:()=>{
+  const miss=MED.slice(0,5).filter(m=>!S.medical[m[0]]);
+  if(miss.length&&!confirm('لم تكتمل بعض تقييمات المرحلة 0 بعد. يُنصح بإكمالها (خاصة مراجعة طبيب المسالك). هل تريد بدء المرحلة 1 الآن على أي حال؟'))return;
+  S.phase=1;S.phaseStart=today();S.programStart=today();save();render();
+ },
+ startSession:el=>{
+  if(S.phase===0){toast('ابدأ المرحلة 1 أولاً.');return}
+  if(S.active){go('workout');return}
+  S.active=buildActive(el.dataset.t);S.ui.fin=null;S.ui.result=null;wakeLock();audio();save();
+  if(el.dataset.t==='R'){openFin(false);S.ui.tab='workout';render();return}
+  go('workout');
+ },
+ exOpen:el=>{S.active.cur=+el.dataset.i;save();render()},
+ exToggle:el=>{const e=S.active.exercises[+el.dataset.i];e.status=el.checked?'done':'pending';if(el.checked)warnBoth(e);save();render()},
+ exSkip:el=>{const a=S.active,i=+el.dataset.i;a.exercises[i].status='skipped';if(a.work&&a.work.ei===i)a.work=null;const n=a.exercises.findIndex(x=>x.status==='pending');a.cur=n>=0?n:i;save();render()},
+ rowStart:el=>rowStart(+el.dataset.i,+el.dataset.r),
+ rowFinish:el=>rowFinish(+el.dataset.i,+el.dataset.r,false),
+ rowQuick:el=>rowQuick(+el.dataset.i,+el.dataset.r),
+ rowUndo:el=>{const e=S.active.exercises[+el.dataset.i];e.rows[+el.dataset.r].done=false;if(e.status==='done')e.status='pending';save();render()},
+ restAdj:el=>{const a=S.active;if(!a||!a.rest)return;a.rest.endAt+= +el.dataset.d*1000;a.rest.ended=false;save();updateRest()},
+ restSkip:()=>{const a=S.active;if(a){a.rest=null;save()}renderRest();$('#restbar').classList.remove('end')},
+ finishOpen:()=>{const a=S.active;if(a.work){toast('أنهِ المجموعة الجارية أولاً.');return}openFin(false)},
+ stopOpen:()=>{const a=S.active;a.work=null;a.rest=null;openFin(true)},
+ finCancel:()=>{S.ui.fin=null;save();render()},
+ finishSave:finishSave,
+ discard:()=>{if(confirm('إلغاء الحصة دون حفظ؟')){S.active=null;S.ui.fin=null;save();render()}},
+ resultOk:()=>{S.ui.result=null;go('home')},
+ weekNav:el=>{S.ui.weekOffset=Math.min(0,(S.ui.weekOffset||0)+ +el.dataset.d);render()},
+ metric:el=>{S.ui.chartMetric=el.dataset.m;render()},
+ reviewHold:()=>{saveReview('hold','تثبيت المرحلة الحالية');save();toast('تم حفظ المراجعة الأسبوعية.');render()},
+ reviewAdvance:()=>{
+  const rd=readiness();if(rd.status!=='ready'){toast('معايير الجاهزية غير مكتملة.');return}
+  if(!confirm(`تأكيد الانتقال إلى المرحلة ${S.phase+1}: ${PHASES[S.phase+1].n}؟\nتأكد أنك تشعر بجاهزية فعلية وبلا أعراض مقلقة.`))return;
+  saveReview('advance',`انتقال إلى المرحلة ${S.phase+1}`);S.phase++;S.phaseStart=today();save();toast('تم الانتقال. ابدأ المرحلة الجديدة بحذر.');render();
+ },
+ stepBack:()=>{if(S.phase<2)return;if(!confirm('العودة إلى المرحلة السابقة؟'))return;saveReview('back',`عودة إلى المرحلة ${S.phase-1}`);S.phase--;S.phaseStart=today();save();render()},
+ saveAssess:()=>{
+  const f=Object.assign({},S.ui.af||{});const has=['ktwL','ktwR','slbL','slbR','aslrL','aslrR','hamL','hamR','hamN','wd','mini'].some(k=>f[k]);
+  if(!has){toast('أدخل قياساً أو ملاحظة واحدة على الأقل.');return}
+  f.id=uid();f.date=f.date||today();S.assessments.push(f);S.assessments.sort((a,b)=>a.date<b.date?-1:1);S.ui.af={};save();toast('تم حفظ الاختبار.');render();
+ },
+ delAssess:el=>{if(confirm('حذف هذا الاختبار؟')){S.assessments=S.assessments.filter(a=>a.id!==el.dataset.id);save();render()}},
+ more:el=>{S.ui.more=el.dataset.m||null;render();window.scrollTo(0,0)},
+ delSession:el=>{if(confirm('حذف هذه الحصة من السجل؟')){S.sessions=S.sessions.filter(s=>s.id!==el.dataset.id);save();render()}},
+ planPh:el=>{S.ui.planPhase=+el.dataset.p;render()},planSe:el=>{S.ui.planSess=el.dataset.s;render()},
+ planMove:el=>{const l=S.plan[S.ui.planPhase][S.ui.planSess],i=+el.dataset.i,j=i+ +el.dataset.d;if(j<0||j>=l.length)return;[l[i],l[j]]=[l[j],l[i]];save();render()},
+ planDel:el=>{if(confirm('حذف هذا التمرين من الحصة؟')){S.plan[S.ui.planPhase][S.ui.planSess].splice(+el.dataset.i,1);save();render()}},
+ planAdd:()=>addToPlan($('#addEx').value),
+ planCustom:()=>{
+  const ar=$('#cuAr').value.trim(),en=$('#cuEn').value.trim()||ar;if(!ar){toast('أدخل اسم التمرين.');return}
+  if(KEGEL.test(ar+' '+en)){alert('لا يمكن إضافة تمارين كيجل أو مقاطعة تدفق البول دون تقييم مختص قاع الحوض.');return}
+  const id='c_'+uid();S.customEx.push({id,ar,en,unit:$('#cuUn').value,custom:true,fig:'squat'});addToPlan(id,ar+' '+en);
+ },
+ planReset:()=>{if(confirm('استعادة التمارين الافتراضية لهذه المرحلة؟ ستُفقد تعديلاتك عليها.')){S.plan[S.ui.planPhase]=defaultPlan()[S.ui.planPhase];save();render()}},
+ csvSessions,csvAssess,pdf:pdfReport,
+ backup:()=>dl(`rehab-backup-${today()}.json`,'application/json',JSON.stringify(S)),
+ wipe:()=>{if(confirm('سيتم حذف كل البيانات نهائياً. متابعة؟')&&confirm('تأكيد أخير: لا يمكن التراجع.')){localStorage.removeItem(KEY);load();render()}}
+};
+function addToPlan(id,nameForCheck){
+  const ph=S.ui.planPhase,d=exDef(id);
+  if(KEGEL.test((nameForCheck||'')+d.en+d.ar)){alert('غير مسموح: تمارين كيجل المكثفة أو مقاطعة البول تحتاج تقييم مختص.');return}
+  if(RISKY.test((nameForCheck||'')+d.en+d.ar)&&ph<=2&&!confirm('هذا النوع من التمارين (قفز/جري/اندفاعات/سكوات عميق) يخالف قواعد الأمان في بداية البرنامج. إضافته ليست مناسبة قبل تقييم مختص. متابعة رغم ذلك؟'))return;
+  if(d.minPhase&&ph<d.minPhase&&!confirm(`هذا التمرين مخصص عادة للمرحلة ${d.minPhase} فما بعد. إضافته للمرحلة ${ph} قد لا يكون مناسباً. متابعة؟`))return;
+  S.plan[ph][S.ui.planSess].push({ex:id,sets:d.unit==='min'?1:2,reps:d.unit==='sec'?15:d.unit==='min'?5:10});save();render();
+}
+document.addEventListener('click',e=>{const el=e.target.closest('[data-act]');if(!el||el.tagName==='INPUT'&&el.type==='checkbox'&&e.type==='click'&&false)return;if(el.tagName==='INPUT')return;const f=A[el.dataset.act];if(f)f(el,e)});
+document.addEventListener('change',e=>{
+  const el=e.target;
+  if(el.tagName==='INPUT'&&el.type==='checkbox'&&el.dataset.act){A[el.dataset.act](el,e);return}
+  if(el.id==='restoreF'&&el.files[0]){const fr=new FileReader();fr.onload=()=>{try{const o=JSON.parse(fr.result);if(!o||o.v!==1||!Array.isArray(o.sessions))throw 0;if(!confirm('استبدال البيانات الحالية بالنسخة المختارة؟'))return;localStorage.setItem(KEY,JSON.stringify(o));load();render();toast('تمت الاستعادة.')}catch(x){toast('ملف غير صالح.')}};fr.readAsText(el.files[0]);return}
+  bind(el,true);
+});
+document.addEventListener('input',e=>bind(e.target,false));
+function bind(el,isChange){
+  const b=el.dataset&&el.dataset.bind;if(!b)return;const f=el.dataset.f;
+  if(b==='row'){const r=S.active.exercises[+el.dataset.i].rows[+el.dataset.r];r[f]=el.value;save()}
+  else if(b==='fin'){S.ui.fin[f]=el.value;if(f==='rpe'||f==='pain'||f==='control'){const t={rpe:'rpeV',pain:'painV',control:'ctlV'}[f];$('#'+t).textContent=el.value}save()}
+  else if(b==='sym'){const s=S.ui.fin.symptoms,k=el.dataset.k;const i=s.indexOf(k);if(el.checked&&i<0)s.push(k);if(!el.checked&&i>=0)s.splice(i,1);save()}
+  else if(b==='af'){S.ui.af=S.ui.af||{};S.ui.af[f]=el.value}
+  else if(b==='set'){S.settings[f]=el.type==='checkbox'?el.checked:+el.value;if(f==='rest')$('#restV').textContent=el.value;save()}
+  else if(b==='progStart'&&isChange&&el.value){S.programStart=el.value;save()}
+  else if(b==='chartEx'&&isChange){S.ui.chartEx=el.value;render()}
+  else if(b==='plan'&&isChange){
+    const p=S.plan[S.ui.planPhase][S.ui.planSess][+el.dataset.i];
+    if(el.type==='checkbox')p[f]=el.checked;else{const v=num(el.value);if(f==='repsMax')p[f]=v&&v>p.reps?v:null;else if(v&&v>0)p[f]=Math.round(v)}
+    save();render();
+  }
+}
+if('serviceWorker' in navigator&&location.protocol.startsWith('http')){navigator.serviceWorker.register('sw.js').catch(()=>{})}
+render();
+</script>
+</body>
+</html>
